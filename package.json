@@ -11,7 +11,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "electron": "ng build && electron ."
+    "electron": "ng build && electron --trace-warnings ."
   },
   "private": true,
   "dependencies": {
@@ -23,7 +23,7 @@
     "@angular/platform-browser": "^19.1.0",
     "@angular/platform-browser-dynamic": "^19.1.0",
     "@angular/router": "^19.1.0",
-    "better-sqlite3": "11.8.1",
+    "better-sqlite3": "^11.8.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
