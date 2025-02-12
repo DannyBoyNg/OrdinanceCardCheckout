@@ -1,0 +1,30 @@
+.header {
+  display: flex;
+  height: 27px;
+  border-bottom: solid 1px silver;
+  background-color: #86d2ed;
+  align-items: center;
+  padding-left: 10px;
+  font-family: 'Segoe UI';
+  font-size: 14px;
+  text-align: center;
+}
+.content {
+  display: flex;
+  height: calc(100vh - 28px);
+  overflow-y: auto;
+}
+.left {
+  width: 220px;
+  height: calc(100vh - 28px);
+  overflow-y: auto;
+  border-right: solid 1px silver;
+  background-color: #eee;
+}
+.right {
+  width: calc(100% - 200px);
+  height: 100%;
+}
+.active {
+  background-color: orange !important;
+}

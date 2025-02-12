@@ -1,1 +1,12 @@
-<router-outlet />
+<div class="header">Test</div>
+<div class="content">
+    <div class="left">
+      <button routerLink="/logs" routerLinkActive="active">Logs</button>
+      <button routerLink="/cards" routerLinkActive="active">Cards</button>
+      <button routerLink="/users" routerLinkActive="active">Users</button>
+    </div>
+    <div class="right">
+        <router-outlet />
+    </div>
+</div>
+
