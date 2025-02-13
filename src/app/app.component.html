@@ -1,12 +1,17 @@
 <div class="header">Test</div>
 <div class="content">
     <div class="left">
-      <button routerLink="/logs" routerLinkActive="active">Logs</button>
-      <button routerLink="/cards" routerLinkActive="active">Cards</button>
+      <button routerLink="/" routerLinkActive="active">Home</button>
       <button routerLink="/users" routerLinkActive="active">Users</button>
+      <button routerLink="/cards" routerLinkActive="active">Cards</button>
+      <button routerLink="/logs" routerLinkActive="active">Logs</button>
     </div>
     <div class="right">
         <router-outlet />
     </div>
 </div>
-
+<div class="footer">
+  <div class="totalCards">Total ordinance cards: 0</div>
+  <div class="checkedOut">Total checked out: 0 </div>
+  <div class="version">v1.0</div>
+</div>
