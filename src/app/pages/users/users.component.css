@@ -1,0 +1,11 @@
+.container {
+    padding: 20px;
+}
+table{
+    border: solid 1px #74777f;
+}
+tr.mat-mdc-row, tr.mat-mdc-header-row {
+    border: 1px solid #e7e7e7;
+    height: 45px;
+    color: #555 !important;
+}
