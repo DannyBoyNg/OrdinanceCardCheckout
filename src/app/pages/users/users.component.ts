@@ -48,7 +48,7 @@ export class UsersComponent {
 
   getUsers() {
     const users = this.db.getUsers();
-    this.dataSource.set(users);
+    //this.dataSource.set(users);
   }
 
   createUser() {
