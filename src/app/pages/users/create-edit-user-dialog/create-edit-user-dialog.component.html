@@ -1,0 +1,9 @@
+<div class="modal-window" (click)="$event.stopPropagation()" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container">
+  <div class="modal-header" cdkDragHandle>
+    <div class="modal-title">{{data.mode}} User</div>
+    <div class="modal-close" (click)="closeModal()">&times;</div>
+  </div>
+  <div class="modal-content">
+
+  </div>
+</div>

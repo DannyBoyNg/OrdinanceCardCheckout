@@ -28,6 +28,6 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrl: './ordinance-cards.component.css'
 })
 export class OrdinanceCardsComponent {
-  displayedColumns: string[] = ['position', 'name', 'weight'];
+  displayedColumns: string[] = ['id', 'name', 'code', 'action'];
   dataSource = ELEMENT_DATA;
 }

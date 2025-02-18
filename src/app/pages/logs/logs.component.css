@@ -1,0 +1,23 @@
+.container {
+    padding: 0 40px;
+}
+table{
+    border: solid 1px #74777f;
+}
+tr.mat-mdc-row, tr.mat-mdc-header-row {
+    border: 1px solid #e7e7e7;
+    height: 45px;
+    color: #555 !important;
+}
+.title {
+    font-size: 24px;
+    color: #555;
+}
+.btn {
+    padding: 10px;
+    width: 100px;
+    margin-left: 5px;
+}
+.mat-column-action {
+    width: 245px;
+}

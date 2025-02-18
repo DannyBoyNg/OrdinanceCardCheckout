@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import Database from 'better-sqlite3';
 import BetterSqlite3 from 'better-sqlite3';
+import { CheckOut } from '../interfaces/checkout.interface';
+import { OrdinanceCard } from '../interfaces/ordinace-card.interface';
+import { CheckIn } from '../interfaces/checkin.interface';
+import { User } from '../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -21,19 +25,44 @@ export class DatabaseService {
     this.db?.close();
   }
 
-  insertUser() {
+  getUsers() {
+    const stmt = this.db?.prepare('SELECT * FROM users');
+    return stmt?.all() as User[];
+  }
+
+  createUser(user: User) {
 
   }
 
-  insertCard() {
+  editUser(user: User) {
+
+  }
+  
+  deleteUser(id: number) {
 
   }
 
-  checkOut() {
+  getCards() {  
 
   }
 
-  checkIn() {
+  createCard(card: OrdinanceCard) {
+
+  }
+
+  editCard(card: OrdinanceCard) {
+
+  }
+
+  deleteCard(id: number) {
+
+  }
+
+  checkOut(checkOut: CheckOut) {
+
+  }
+
+  checkIn(checkIn: CheckIn) {
     
   }
 

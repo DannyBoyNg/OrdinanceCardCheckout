@@ -1,5 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
+import {
+  MatDialog
+} from '@angular/material/dialog';
+import { CreateEditUserDialogComponent } from './create-edit-user-dialog/create-edit-user-dialog.component';
+import { DialogService } from '@dannyboyng/dialog';
+import { firstValueFrom } from 'rxjs';
+import { DatabaseService } from '../../services/database.service';
+import { User } from '../../interfaces/user.interface';
 
 export interface PeriodicElement {
   name: string;
@@ -28,6 +36,47 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrl: './users.component.css'
 })
 export class UsersComponent {
-  displayedColumns: string[] = ['position', 'name', 'weight'];
-  dataSource = ELEMENT_DATA;
+  readonly dialog = inject(MatDialog);
+  dialogService = inject(DialogService);
+  db = inject(DatabaseService);
+  displayedColumns: string[] = ['id', 'name', 'code', 'admin', 'action'];
+  dataSource: WritableSignal<User[]> = signal([]);
+
+  constructor() {
+
+  }
+
+  getUsers() {
+    const users = this.db.getUsers();
+    this.dataSource.set(users);
+  }
+
+  createUser() {
+    this.dialog.open(CreateEditUserDialogComponent, 
+      {
+        position: {top: '100px'},
+        maxWidth: '100%',
+        data: {
+          mode: 'Create',
+        },
+      }
+    );
+  }
+
+  editUser() {
+    this.dialog.open(CreateEditUserDialogComponent, 
+      {
+        position: {top: '100px'},
+        maxWidth: '100%',
+        data: {
+          mode: 'Edit',
+        },
+      }
+    );
+  }
+
+  async deleteUser() {
+    const result = await firstValueFrom(this.dialogService.confirm('Are you sure you want to delete this user?'));
+    console.log(result);
+  }
 }

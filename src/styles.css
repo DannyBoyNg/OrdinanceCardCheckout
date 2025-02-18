@@ -4,3 +4,10 @@ body { margin: 0; font-family: Verdana; }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+button {
+    cursor: pointer;
+}
+.mat-mdc-dialog-surface {
+    border-radius: 10px !important;
+}

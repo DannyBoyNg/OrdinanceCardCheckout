@@ -20,6 +20,8 @@
   border-right: solid 1px silver;
   background-color: #eee;
   padding: 10px;
+  position: sticky;
+  top: 0;
 }
 .left > button {
   width: 100%;

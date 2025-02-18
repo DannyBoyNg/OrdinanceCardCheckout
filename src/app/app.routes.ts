@@ -5,9 +5,9 @@ import { OrdinanceCardsComponent } from './pages/ordinance-cards/ordinance-cards
 import { LogsComponent } from './pages/logs/logs.component';
 
 export const routes: Routes = [
-    { path: 'home', component: HomeComponent },
     { path: 'users', component: UsersComponent },
     { path: 'cards', component: OrdinanceCardsComponent },
     { path: 'logs', component: LogsComponent },
-
+    { path: '', component: HomeComponent },
+    { path: '**', component: HomeComponent }
 ];
