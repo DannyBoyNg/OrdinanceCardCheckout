@@ -12,7 +12,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "electron": "ng build && electron --trace-warnings .",
-    "rebuild" : "./node_modules/.bin/electron-rebuild"
+    "rebuild": "./node_modules/.bin/electron-rebuild",
+    "rebuild2": ".\\node_modules\\.bin\\electron-rebuild.cmd"
   },
   "private": true,
   "dependencies": {
