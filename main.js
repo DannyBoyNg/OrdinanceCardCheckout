@@ -1,7 +1,7 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow } = require('electron');
 const path = require('node:path');
-import Database from 'better-sqlite3';
+const Database = require('better-sqlite3');
 
 const db = new Database('databaseV1.db', {verbose: console.log});
 db.pragma('journal_mode = WAL');

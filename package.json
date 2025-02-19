@@ -1,7 +1,7 @@
 {
   "name": "ordinance-card-checkout",
   "version": "1.0.0",
-  "description": "A simple lds ordinance card checkout app. A temple needs to keep track of its ordinance cards somehow.",
+  "description": "Ordinance card checkout system",
   "main": "main.js",
   "author": "Danny Ng",
   "license": "MIT",
@@ -11,7 +11,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "electron": "ng build && electron --trace-warnings ."
+    "electron": "ng build && electron --trace-warnings .",
+    "rebuild" : "./node_modules/.bin/electron-rebuild"
   },
   "private": true,
   "dependencies": {
@@ -34,6 +35,7 @@
     "@angular-devkit/build-angular": "^19.1.7",
     "@angular/cli": "^19.1.7",
     "@angular/compiler-cli": "^19.1.6",
+    "@electron/rebuild": "^3.7.1",
     "@types/better-sqlite3": "^7.6.12",
     "electron": "^34.2.0",
     "typescript": "~5.7.3"
