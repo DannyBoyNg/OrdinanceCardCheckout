@@ -1,18 +1,29 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow } = require('electron');
 const path = require('node:path');
-const Database = require('better-sqlite3');
 
-const db = new Database('databaseV1.db', {verbose: console.log});
+// Sqlite3 Database
+const Database = require('better-sqlite3');
+const db = new Database('public/databaseV1.db', {verbose: console.log});
 db.pragma('journal_mode = WAL');
+
+// Error Handling
+process.on('uncaughtException', (error) => {
+  console.error("Unexpected error: ", error);
+});
 
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    fullscreen: true
-  })
+    width: 1600,
+    height: 900,
+    fullscreen: true,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      enableRemoteModule: false,
+    }
+  });
 
   // and load the index.html of the app.
   mainWindow.loadFile('dist/ordinance-card-checkout/browser/index.html')
@@ -41,7 +52,60 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })
 
-function getUsers() {
-  const stmt = this.db?.prepare('SELECT * FROM users');
-  return stmt?.all();
+// Sqlite API
+const { ipcMain } = require('electron');  
+ipcMain.handle('getUsers', async (_, arg) => getUsers());
+ipcMain.handle('createUsers', async (_, arg) => createUser(arg));
+ipcMain.handle('updateUsers', async (_, arg) => updateUser(arg));
+ipcMain.handle('deleteUsers', async (_, arg) => deleteUser(arg));
+
+const getUsers = () => {
+    try {
+        const query = `SELECT * FROM users`;
+        const readQuery = db.prepare(query);
+        const rowList = readQuery.all();
+        return rowList;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
+
+const createUser = (user) => {
+    try {
+        const insertQuery = db.prepare(`INSERT INTO users (name, barcode) VALUES (@name, @barcode)`);
+        const transaction = db.transaction(() => {
+            insertQuery.run(user);
+        });
+        transaction();
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
+
+const updateUser = (user) => {
+    try {
+        const updateQuery = db.prepare(`UPDATE users SET name = @name, barcode = @barcode, admin = @admin WHERE id = @id`);
+        const transaction = db.transaction(() => {
+            updateQuery.run(user);
+        });
+        transaction();
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
+
+const deleteUser = (id) => {
+    try {
+        const deleteQuery = db.prepare(`DELETE FROM users WHERE id = ?`);
+        const transaction = db.transaction(() => {
+            deleteQuery.run(id);
+        });
+        transaction();
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
 }

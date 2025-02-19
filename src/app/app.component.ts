@@ -12,16 +12,9 @@ import { DialogService } from '@dannyboyng/dialog';
 export class AppComponent {
   dialogService = inject(DialogService);
   vcr = inject(ViewContainerRef);
-  title = 'OrdinanceCardCheckout';
 
   constructor() {
     this.dialogService.setViewContainerRef(this.vcr);
-
-    if (this.isElectron()) {
-      console.log('Running in Electron!');
-    } else {
-      console.log('Not running in Electron!');
-    }
   }
 
   @HostListener('window:keypress', ['$event'])
@@ -30,16 +23,16 @@ export class AppComponent {
   }
 
   isElectron() {
-    //if (typeof window !== 'undefined' && typeof window.process === 'object' && window.process.type === 'renderer') {
-    //    return true;
-    //}
-    //if (typeof process !== 'undefined' && typeof process.versions === 'object' && !!process.versions.electron) {
-    //    return true;
-    //}
-    if (typeof navigator === 'object' && typeof navigator.userAgent === 'string' && navigator.userAgent.indexOf('Electron') >= 0) {
-        return true;
-    }
-    return false;
+    return (typeof navigator === 'object' && typeof navigator.userAgent === 'string' && navigator.userAgent.indexOf('Electron') >= 0);
   }
 
+}
+
+declare global {
+  interface Window {
+    sqliteAPI: {
+      sendMessage: (message : string) => void;
+      invoke: (channel: string, data: any) => Promise<any>;
+    }
+  }
 }

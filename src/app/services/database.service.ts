@@ -11,28 +11,20 @@ export class DatabaseService {
 
   constructor() { }
 
-  connect() {
-
+  async getUsers() {
+    return await window.sqliteAPI.invoke('getUsers', null);
   }
 
-  disconnect() {
-    
+  async createUser(user: User) {
+    return await window.sqliteAPI.invoke('createUser', user);
   }
 
-  getUsers() {
-
-  }
-
-  createUser(user: User) {
-
-  }
-
-  editUser(user: User) {
-
+  async updateUser(user: User) {
+    return await window.sqliteAPI.invoke('updateUser', user);
   }
   
-  deleteUser(id: number) {
-
+  async deleteUser(id: number) {
+    return await window.sqliteAPI.invoke('deleteUser', id);
   }
 
   getCards() {  
