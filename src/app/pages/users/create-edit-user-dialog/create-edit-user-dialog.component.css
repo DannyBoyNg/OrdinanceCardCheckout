@@ -89,3 +89,28 @@ button[disabled] {
   background-color: #fff;
   z-index: 100;
 }
+.createUser {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 600px;
+}
+.scanCard {
+  font-size: 30px;
+  font-weight: 500;
+  color: #0078D7;
+}
+input {
+  height: 40px;
+  border-radius: 5px;
+  border: 1px solid silver;
+  min-width: 300px;
+  outline: none;
+  padding-left: 15px;
+}
+.createBtn {
+  height: 100px;
+  width: 200px;
+  border-radius: 10px;
+}

@@ -29,10 +29,11 @@ export class AppComponent {
       console.log('Barcode scanned: ', barcode);
 
       //Check if the barcode is an existing user or ordinance card
-      const users = await this.db.getUsers();
-      const cards = await this.db.getCards();
-      const user = users.find(u => u.BarCode === barcode);
-      const card = cards.find(c => c.BarCode === barcode);
+      //const users = await this.db.getUsers();
+      //const cards = await this.db.getCards();
+      //const user = users.find(u => u.BarCode === barcode);
+      //const card = cards.find(c => c.BarCode === barcode);
+
     });
   }
 
