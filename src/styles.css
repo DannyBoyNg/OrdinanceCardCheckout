@@ -1,13 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 html, body { height: calc(100vh - 0px); overflow-y: auto; }
-body { margin: 0; font-family: Verdana; }
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: 'Segoe UI' !important; }
 
 button {
     cursor: pointer;
 }
 .mat-mdc-dialog-surface {
     border-radius: 10px !important;
+}
+.mat-mdc-row, .mat-mdc-header-row {
+    font-family: 'Segoe UI' !important;
 }

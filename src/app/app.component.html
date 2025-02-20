@@ -5,6 +5,7 @@
       <button routerLink="/users" routerLinkActive="active">Users</button>
       <button routerLink="/cards" routerLinkActive="active">Cards</button>
       <button routerLink="/logs" routerLinkActive="active">Logs</button>
+      <button (click)="quit()">Quit</button>
     </div>
     <div class="right">
         <router-outlet />
@@ -13,5 +14,6 @@
 <div class="footer">
   <div class="totalCards">Total cards: 0</div>
   <div class="checkedOut">Cards checked out: 0 </div>
+  <button (click)="injectBarcode()">inject</button>
   <div class="version">v1.0</div>
 </div>

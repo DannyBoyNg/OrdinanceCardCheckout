@@ -11,15 +11,15 @@ export class DatabaseService {
 
   constructor() { }
 
-  async getUsers() {
+  async getUsers(): Promise<User[]> {
     return await window.sqliteAPI.invoke('getUsers', null);
   }
 
-  async createUser(user: User) {
+  async createUser(user: User): Promise<User> {
     return await window.sqliteAPI.invoke('createUser', user);
   }
 
-  async updateUser(user: User) {
+  async updateUser(user: User): Promise<User> {
     return await window.sqliteAPI.invoke('updateUser', user);
   }
   
@@ -27,8 +27,8 @@ export class DatabaseService {
     return await window.sqliteAPI.invoke('deleteUser', id);
   }
 
-  getCards() {  
-
+  async getCards(): Promise<OrdinanceCard[]> {  
+    return await window.sqliteAPI.invoke('getCards', null);
   }
 
   createCard(card: OrdinanceCard) {

@@ -1,5 +1,5 @@
 export interface User {
     Id: number;
     Name: string;
-    RecommendBarCode: number;
+    BarCode: string;
 }

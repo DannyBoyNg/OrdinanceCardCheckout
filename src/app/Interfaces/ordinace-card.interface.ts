@@ -1,5 +1,5 @@
 export interface OrdinanceCard {
     Id: number;
-    BarCode: number;
+    BarCode: string;
     Language: string;
 }
