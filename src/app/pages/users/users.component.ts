@@ -43,13 +43,14 @@ export class UsersComponent {
     );
   }
 
-  editUser() {
+  editUser(user: User) {
     this.dialog.open(CreateEditUserDialogComponent, 
       {
         position: {top: '100px'},
         maxWidth: '100%',
         data: {
           mode: 'Edit',
+          user: user
         },
       }
     );

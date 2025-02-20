@@ -1,5 +1,5 @@
-<div class="modal-window" (click)="$event.stopPropagation()" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container">
-  <div class="modal-header" cdkDragHandle>
+<div class="modal-window" (click)="$event.stopPropagation()">
+  <div class="modal-header">
     <div class="modal-title">{{data.mode}} User
       <button (click)="inject()">Inject</button>
       <button (click)="inject2()">Inject2</button>
@@ -7,7 +7,7 @@
     <div class="modal-close" (click)="closeModal()">&times;</div>
   </div>
   <div class="modal-content">
-    <div class="createUser">
+    <div class="createUser" [formGroup]="form">
 
     @if (!barcode()) {
       <span class="scanCard">Scan your recommend</span>
@@ -15,17 +15,17 @@
       <table>
         <tr>
           <td><label>Barcode</label></td>
-          <td><input type="text" id="barcode" value="{{barcode()}}" disabled />  
+          <td><input formControlName="barcode" type="text" id="barcode" />  
           </td>
         </tr>
         <tr>
           <td><label>Name</label></td>
-          <td><input type="text" id="name" autocomplete="off"/></td>
+          <td><input formControlName="name" type="text" id="name" autocomplete="off" /></td>
         </tr>
         <tr>
           <td></td>
           <td>
-            <button class="createBtn" (click)="createUser()">Create</button>
+            <button class="createBtn" (click)="createUser()" [disabled]="!form.valid">Create</button>
           </td>
         </tr>
       </table>

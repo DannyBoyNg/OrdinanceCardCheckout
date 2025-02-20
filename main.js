@@ -57,9 +57,9 @@ app.on('window-all-closed', () => {
 // Sqlite API
 const { ipcMain } = require('electron');  
 ipcMain.handle('getUsers', async (_, arg) => getUsers());
-ipcMain.handle('createUsers', async (_, arg) => createUser(arg));
-ipcMain.handle('updateUsers', async (_, arg) => updateUser(arg));
-ipcMain.handle('deleteUsers', async (_, arg) => deleteUser(arg));
+ipcMain.handle('createUser', async (_, arg) => createUser(arg));
+ipcMain.handle('updateUser', async (_, arg) => updateUser(arg));
+ipcMain.handle('deleteUser', async (_, arg) => deleteUser(arg));
 
 const getUsers = () => {
     try {
@@ -75,7 +75,11 @@ const getUsers = () => {
 
 const createUser = (user) => {
     try {
-        const insertQuery = db.prepare(`INSERT INTO users (name, barcode) VALUES (@name, @barcode)`);
+        const sql1 = `INSERT INTO users (name, barcode) VALUES (@name, @barcode)`;
+        const sql2 = `INSERT INTO users (name, barcode, admin) VALUES (@name, @barcode, 1)`;
+        const sql = (true) ? sql1 : sql2;
+
+        const insertQuery = db.prepare(sql);
         const transaction = db.transaction(() => {
             insertQuery.run(user);
         });
