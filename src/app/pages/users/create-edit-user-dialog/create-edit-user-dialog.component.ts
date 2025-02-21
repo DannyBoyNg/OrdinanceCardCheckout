@@ -57,10 +57,11 @@ export class CreateEditUserDialogComponent {
     this.dialogRef.close({updateCaller});
   }
 
-  createUser() {
+  async createUser() {
     this.form.enable();
     const user = this.form.value as User;
-    this.db.createUser(user);
+    await this.db.createUser(user);
+    this.closeModal(true);
   }
 
   inject() {

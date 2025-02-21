@@ -74,10 +74,13 @@ const getUsers = () => {
 }
 
 const createUser = (user) => {
+
+    const count = getUsers().length;
+
     try {
         const sql1 = `INSERT INTO users (name, barcode) VALUES (@name, @barcode)`;
         const sql2 = `INSERT INTO users (name, barcode, admin) VALUES (@name, @barcode, 1)`;
-        const sql = (true) ? sql1 : sql2;
+        const sql = (count == 0) ? sql2 : sql1;
 
         const insertQuery = db.prepare(sql);
         const transaction = db.transaction(() => {

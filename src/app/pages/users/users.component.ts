@@ -1,8 +1,6 @@
 import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import {
-  MatDialog
-} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { CreateEditUserDialogComponent } from './create-edit-user-dialog/create-edit-user-dialog.component';
 import { DialogService } from '@dannyboyng/dialog';
 import { firstValueFrom } from 'rxjs';
@@ -40,7 +38,11 @@ export class UsersComponent {
           mode: 'Create',
         },
       }
-    );
+    ).afterClosed().subscribe(async (result) => {
+      if (result?.updateCaller) {
+        await this.getUsers();
+      }
+    });
   }
 
   editUser(user: User) {
@@ -53,7 +55,11 @@ export class UsersComponent {
           user: user
         },
       }
-    );
+    ).afterClosed().subscribe(async (result) => {
+      if (result?.updateCaller) {
+        await this.getUsers();
+      }
+    });
   }
 
   async deleteUser(id: number) {
