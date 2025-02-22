@@ -4,7 +4,7 @@ const path = require('node:path');
 
 // Sqlite3 Database
 const Database = require('better-sqlite3');
-const db = new Database('public/databaseV1.db', {verbose: console.log});
+const db = new Database('public/databaseV1.db');
 db.pragma('journal_mode = WAL');
 
 // Error Handling
