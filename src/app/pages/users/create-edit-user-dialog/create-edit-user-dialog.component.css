@@ -109,6 +109,14 @@ input {
   outline: none;
   padding-left: 15px;
 }
+select {
+  height: 44px;
+  border-radius: 5px;
+  border: 1px solid silver;
+  min-width: 319px;
+  outline: none;
+  padding-left: 15px;
+}
 label {
   font-size: 20px;
   line-height: 10px;

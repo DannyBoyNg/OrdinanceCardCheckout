@@ -17,7 +17,7 @@ export class UsersComponent {
   readonly dialog = inject(MatDialog);
   dialogService = inject(DialogService);
   db = inject(DatabaseService);
-  displayedColumns: string[] = ['id', 'name', 'code', 'admin', 'action'];
+  displayedColumns: string[] = ['name', 'code', 'admin', 'action'];
   dataSource: WritableSignal<User[]> = signal([]);
 
   async ngOnInit() {

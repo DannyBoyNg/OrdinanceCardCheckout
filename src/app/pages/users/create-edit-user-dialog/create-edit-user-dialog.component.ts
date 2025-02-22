@@ -24,8 +24,10 @@ export class CreateEditUserDialogComponent {
 
   barcode = signal('');
   form = this.fb.group({
+    id: 0,
     barcode: '',
     name: '',
+    admin: 0
   });
 
   ngOnInit() {
@@ -36,13 +38,19 @@ export class CreateEditUserDialogComponent {
     nameControl.setValidators(Validators.required);
 
     if (this.data.mode === 'Edit') {
-      
+      const user = this.data.user as User;
+      this.barcode.set(user.BarCode);
+      this.form.setValue({
+        id: user.Id,
+        barcode: user.BarCode,
+        name: user.Name,
+        admin: user.Admin
+      })
     }
 
     this.state.barcodeScanner$
     .pipe(takeUntil(this.autoUnsubscribe))
     .subscribe(async (barcode) => {
-      console.log('Barcode scanned: ', barcode);
       this.barcode.set(barcode);
       barcodeControl.setValue(barcode);
     });
@@ -61,6 +69,14 @@ export class CreateEditUserDialogComponent {
     this.form.enable();
     const user = this.form.value as User;
     await this.db.createUser(user);
+    this.closeModal(true);
+  }
+
+  async updateUser() {
+
+    this.form.enable();
+    const user = this.form.value as User;
+    await this.db.updateUser(user);
     this.closeModal(true);
   }
 

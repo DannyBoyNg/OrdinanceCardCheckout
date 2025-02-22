@@ -22,14 +22,29 @@
           <td><label>Name</label></td>
           <td><input formControlName="name" type="text" id="name" autocomplete="off" /></td>
         </tr>
+        @if (data.mode === 'Edit') {
+        <tr>
+          <td><label>Admin</label></td>
+          <td>
+            <select id="admin" formControlName="admin">
+              <option [ngValue]="0">No</option>
+              <option [ngValue]="1">Yes</option>
+            </select>
+          </td>
+        </tr>
+        }
         <tr>
           <td></td>
           <td>
-            <button class="createBtn" (click)="createUser()" [disabled]="!form.valid">Create</button>
+            @if(data.mode === 'Create') {
+              <button class="createBtn" (click)="createUser()" [disabled]="!form.valid">Create</button>
+            } @else if(data.mode === 'Edit') {
+              <button class="createBtn" (click)="updateUser()" [disabled]="!form.valid">Update</button>
+            }
           </td>
         </tr>
       </table>
-   }
+    }
     </div>
   </div>
 </div>
