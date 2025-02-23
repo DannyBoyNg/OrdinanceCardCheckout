@@ -5,6 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatabaseService } from '../../../services/database.service';
 import { User } from '../../../interfaces/user.interface';
+import { DialogService } from '@dannyboyng/dialog';
 
 @Component({
   selector: 'app-create-edit-user-dialog',
@@ -21,6 +22,7 @@ export class CreateEditUserDialogComponent {
   state = inject(GlobalStateService);
   fb = inject(FormBuilder);
   db = inject(DatabaseService);
+  dialogService = inject(DialogService);
 
   barcode = signal('');
   form = this.fb.group({
@@ -68,7 +70,15 @@ export class CreateEditUserDialogComponent {
   async createUser() {
     this.form.enable();
     const user = this.form.value as User;
-    await this.db.createUser(user);
+    try {
+      await this.db.createUser(user);
+    } catch(ex) {
+      let errMsg = 'Cannot create user: An unknown error has occurred.';
+      if (ex == "Error: Error invoking remote method 'createUser': SqliteError: UNIQUE constraint failed: Users.BarCode") {
+        errMsg = 'Cannot create user: Temple Recommend already exist.';
+      }
+      this.dialogService.error(errMsg);
+    }
     this.closeModal(true);
   }
 
