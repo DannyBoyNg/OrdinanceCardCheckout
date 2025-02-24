@@ -1,0 +1,12 @@
+@if (adminUserId() != 0) {
+    <button routerLink="/admin/users" routerLinkActive="active">Users</button>
+    <button routerLink="/admin/cards" routerLinkActive="active">Cards</button>
+    <button routerLink="/admin/logs" routerLinkActive="active">Logs</button>
+    <button routerLink="/" routerLinkActive="active">Close Admin Panel</button>
+}
+@if (adminUserId() == 0) {
+    <div class="authorize">
+        <span class="scanCard">Scan your recommend to access the admin panel</span>
+    </div>
+}
+<router-outlet />

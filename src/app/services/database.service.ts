@@ -11,44 +11,46 @@ export class DatabaseService {
 
   constructor() { }
 
+  //Users
   async getUsers(): Promise<User[]> {
     return await window.sqliteAPI.invoke('getUsers', null);
   }
 
-  async createUser(user: User): Promise<User> {
+  async getUser(barcode: string): Promise<User> {
+    return await window.sqliteAPI.invoke('getUser', barcode);
+  }
+
+  async createUser(user: User): Promise<void> {
     return await window.sqliteAPI.invoke('createUser', user);
   }
 
-  async updateUser(user: User): Promise<User> {
+  async updateUser(user: User): Promise<void> {
     return await window.sqliteAPI.invoke('updateUser', user);
   }
   
-  async deleteUser(id: number) {
+  async deleteUser(id: number): Promise<void> {
     return await window.sqliteAPI.invoke('deleteUser', id);
   }
 
+  //Cards
   async getCards(): Promise<OrdinanceCard[]> {  
     return await window.sqliteAPI.invoke('getCards', null);
   }
 
-  createCard(card: OrdinanceCard) {
-
+  async getCard(barcode: string): Promise<OrdinanceCard> {
+    return await window.sqliteAPI.invoke('getCard', barcode);
   }
 
-  editCard(card: OrdinanceCard) {
-
+  async createCard(card: OrdinanceCard) {
+    return await window.sqliteAPI.invoke('createCard', card);
   }
 
-  deleteCard(id: number) {
-
+  async updateCard(card: OrdinanceCard) {
+    return await window.sqliteAPI.invoke('updateCard', card);
   }
 
-  checkOut(checkOut: CheckOut) {
-
-  }
-
-  checkIn(checkIn: CheckIn) {
-    
+  async deleteCard(id: number) {
+    return await window.sqliteAPI.invoke('deleteCard', id);
   }
 
 }

@@ -1,25 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-];
+import { DialogService } from '@dannyboyng/dialog';
+import { firstValueFrom } from 'rxjs';
+import { User } from '../../interfaces/user.interface';
+import { DatabaseService } from '../../services/database.service';
+import { CreateEditCardDialogComponent } from './create-edit-card-dialog/create-edit-card-dialog.component';
+import { OrdinanceCard } from '../../interfaces/ordinace-card.interface';
 
 @Component({
   selector: 'app-ordinance-cards',
@@ -28,6 +15,61 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrl: './ordinance-cards.component.css'
 })
 export class OrdinanceCardsComponent {
-  displayedColumns: string[] = ['id', 'name', 'code', 'action'];
-  dataSource = ELEMENT_DATA;
+ readonly dialog = inject(MatDialog);
+  dialogService = inject(DialogService);
+  db = inject(DatabaseService);
+  displayedColumns: string[] = ['code', 'language', 'status', 'action'];
+  dataSource: WritableSignal<OrdinanceCard[]> = signal([]);
+
+  async ngOnInit() {
+    await this.getCards();
+  }
+
+  async getCards() {
+    const result = await this.db.getCards();
+    console.log(result);
+    this.dataSource.set(result);
+  }
+
+  createCard() {
+    this.dialog.open(CreateEditCardDialogComponent, 
+      {
+        position: {top: '100px'},
+        maxWidth: '100%',
+        data: {
+          mode: 'Create',
+        },
+      }
+    ).afterClosed().subscribe(async (result) => {
+      if (result?.updateCaller) {
+        await this.getCards();
+      }
+    });
+  }
+
+  editCard(user: User) {
+    this.dialog.open(CreateEditCardDialogComponent, 
+      {
+        position: {top: '100px'},
+        maxWidth: '100%',
+        data: {
+          mode: 'Edit',
+          user: user,
+        },
+      }
+    ).afterClosed().subscribe(async (result) => {
+      if (result?.updateCaller) {
+        await this.getCards();
+      }
+    });
+  }
+
+  async deleteUser(id: number) {
+    const result = await firstValueFrom(this.dialogService.confirm('Are you sure you want to delete this user?'));
+    if (result === true) {
+      //Delete card
+      await this.db.deleteCard(id);
+      await this.getCards();
+    }
+  }  
 }

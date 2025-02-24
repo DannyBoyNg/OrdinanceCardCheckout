@@ -11,7 +11,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "electron": "ng build && electron --trace-warnings .",
+    "electron": "ng build && electron .",
     "electron-rebuild": "./node_modules/.bin/electron-rebuild",
     "electron-rebuild2": ".\\node_modules\\.bin\\electron-rebuild.cmd"
   },

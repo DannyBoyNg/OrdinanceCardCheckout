@@ -57,64 +57,93 @@ app.on('window-all-closed', () => {
 // Sqlite API
 const { ipcMain } = require('electron');  
 ipcMain.handle('getUsers', async (_, arg) => getUsers());
+ipcMain.handle('getUser', async (_, arg) => getUser(arg));
 ipcMain.handle('createUser', async (_, arg) => createUser(arg));
 ipcMain.handle('updateUser', async (_, arg) => updateUser(arg));
 ipcMain.handle('deleteUser', async (_, arg) => deleteUser(arg));
+ipcMain.handle('getCards', async (_, arg) => getCards());
+ipcMain.handle('getCard', async (_, arg) => getCard(arg));
+ipcMain.handle('createCard', async (_, arg) => createCard(arg));
+ipcMain.handle('updateCard', async (_, arg) => updateCard(arg));
+ipcMain.handle('deleteCard', async (_, arg) => deleteCard(arg));
 
+//Users
 const getUsers = () => {
-    try {
-        const query = `SELECT * FROM users`;
-        const readQuery = db.prepare(query);
-        const rowList = readQuery.all();
-        return rowList;
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }
+  const query = `SELECT * FROM users`;
+  const readQuery = db.prepare(query);
+  const rowList = readQuery.all();
+  return rowList;
+}
+
+const getUser = (barcode) => {
+  const query = `SELECT * FROM users WHERE barcode = ?`;
+  const stmt = db.prepare(query);
+  return stmt.get(barcode);
 }
 
 const createUser = (user) => {
-
-    const count = getUsers().length;
-
-    //try {
-        const sql1 = `INSERT INTO users (name, barcode) VALUES (@name, @barcode)`;
-        const sql2 = `INSERT INTO users (name, barcode, admin) VALUES (@name, @barcode, 1)`;
-        const sql = (count == 0) ? sql2 : sql1;
-
-        const insertQuery = db.prepare(sql);
-        const transaction = db.transaction(() => {
-            insertQuery.run(user);
-        });
-        transaction();
-    //} catch (err) {
-    //    console.error(err);
-    //    throw err;
-    //}
+  const count = getUsers().length;
+  const sql1 = `INSERT INTO users (name, barcode) VALUES (@Name, @BarCode)`;
+  const sql2 = `INSERT INTO users (name, barcode, admin) VALUES (@Name, @BarCode, 1)`;
+  const sql = (count == 0) ? sql2 : sql1;
+  const insertQuery = db.prepare(sql);
+  const transaction = db.transaction(() => {
+      insertQuery.run(user);
+  });
+  transaction();
 }
 
 const updateUser = (user) => {
-    try {
-        const updateQuery = db.prepare(`UPDATE users SET name = @name, barcode = @barcode, admin = @admin WHERE id = @id`);
-        const transaction = db.transaction(() => {
-            updateQuery.run(user);
-        });
-        transaction();
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }
+  const updateQuery = db.prepare(`UPDATE users SET name = @Name, barcode = @BarCode, admin = @Admin WHERE id = @Id`);
+  const transaction = db.transaction(() => {
+      updateQuery.run(user);
+  });
+  transaction();
 }
 
 const deleteUser = (id) => {
-    try {
-        const deleteQuery = db.prepare(`DELETE FROM users WHERE id = ?`);
-        const transaction = db.transaction(() => {
-            deleteQuery.run(id);
-        });
-        transaction();
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }
+  const deleteQuery = db.prepare(`DELETE FROM users WHERE id = ?`);
+  const transaction = db.transaction(() => {
+      deleteQuery.run(id);
+  });
+  transaction();
+}
+
+//Cards
+const getCards = () => {
+  const query = `SELECT * FROM OrdinanceCards`;
+  const readQuery = db.prepare(query);
+  const rowList = readQuery.all();
+  return rowList;
+}
+
+const getCard = (barcode) => {
+  const query = `SELECT * FROM OrdinanceCards WHERE barcode = ?`;
+  const stmt = db.prepare(query);
+  return stmt.get(barcode);
+}
+
+const createCard = (card) => {
+  const query = `INSERT INTO OrdinanceCards (barcode, Language) VALUES (@BarCode, @Language)`;
+  const insertQuery = db.prepare(query);
+  const transaction = db.transaction(() => {
+      insertQuery.run(card);
+  });
+  transaction();
+}
+
+const updateCard = (card) => {
+  const updateQuery = db.prepare(`UPDATE OrdinanceCards SET barcode = @BarCode, language = @Language, checkedOut = @CheckedOut, checkedOutBy = @CheckedOutBy, checkedOutAt = @CheckedOutAt WHERE id = @Id`);
+  const transaction = db.transaction(() => {
+      updateQuery.run(card);
+  });
+  transaction();
+}
+
+const deleteCard = (id) => {
+  const deleteQuery = db.prepare(`DELETE FROM OrdinanceCards WHERE id = ?`);
+  const transaction = db.transaction(() => {
+      deleteQuery.run(id);
+  });
+  transaction();
 }

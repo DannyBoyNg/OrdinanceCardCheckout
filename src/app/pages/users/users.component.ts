@@ -36,6 +36,7 @@ export class UsersComponent {
         maxWidth: '100%',
         data: {
           mode: 'Create',
+          isAdmin: true,
         },
       }
     ).afterClosed().subscribe(async (result) => {
@@ -52,7 +53,8 @@ export class UsersComponent {
         maxWidth: '100%',
         data: {
           mode: 'Edit',
-          user: user
+          user: user,
+          isAdmin: true,
         },
       }
     ).afterClosed().subscribe(async (result) => {
@@ -65,6 +67,17 @@ export class UsersComponent {
   async deleteUser(id: number) {
     const result = await firstValueFrom(this.dialogService.confirm('Are you sure you want to delete this user?'));
     if (result === true) {
+      //Check if user is trying to delete the last admin. Only allow if the last admin is also the last user
+      const users = await this.db.getUsers();
+      const admins = users.filter(u => u.Admin === 1);
+      if (admins.length === 1 && users.length > 1) {
+        const user = users.find(u => u.Id === id);
+        if (user?.Admin === 1) {
+          this.dialogService.error(['Cannot delete the last admin. You can only delete the last admin if it is also the last user.']);
+          return;
+        }
+      }
+      //Delete user
       await this.db.deleteUser(id);
       await this.getUsers();
     }

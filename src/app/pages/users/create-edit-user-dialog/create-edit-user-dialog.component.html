@@ -15,18 +15,18 @@
       <table>
         <tr>
           <td><label>Barcode</label></td>
-          <td><input formControlName="barcode" type="text" id="barcode" />  
+          <td><input formControlName="BarCode" type="text" id="barcode" />  
           </td>
         </tr>
         <tr>
           <td><label>Name</label></td>
-          <td><input formControlName="name" type="text" id="name" autocomplete="off" /></td>
+          <td><input formControlName="Name" type="text" id="name" autocomplete="off" /></td>
         </tr>
-        @if (data.mode === 'Edit') {
+        @if (isAdmin() === 1) {
         <tr>
           <td><label>Admin</label></td>
           <td>
-            <select id="admin" formControlName="admin">
+            <select id="admin" formControlName="Admin">
               <option [ngValue]="0">No</option>
               <option [ngValue]="1">Yes</option>
             </select>

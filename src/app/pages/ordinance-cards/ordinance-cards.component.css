@@ -1,8 +1,9 @@
 .container {
     padding: 0 40px;
 }
-table{
+.tableContainer {
     border: solid 1px #74777f;
+    min-height: 600px;
 }
 tr.mat-mdc-row, tr.mat-mdc-header-row {
     border: 1px solid #e7e7e7;
@@ -20,4 +21,15 @@ tr.mat-mdc-row, tr.mat-mdc-header-row {
 }
 .mat-column-action {
     width: 245px;
+}
+.AddCardBtn {
+    padding: 3px;
+    height: 29px;
+    width: 100px;
+    margin-left: 5px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }

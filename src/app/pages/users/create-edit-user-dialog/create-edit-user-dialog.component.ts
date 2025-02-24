@@ -25,29 +25,38 @@ export class CreateEditUserDialogComponent {
   dialogService = inject(DialogService);
 
   barcode = signal('');
+  isAdmin = signal(0);
   form = this.fb.group({
-    id: 0,
-    barcode: '',
-    name: '',
-    admin: 0
+    Id: 0,
+    BarCode: '',
+    Name: '',
+    Admin: 0
   });
 
-  ngOnInit() {
-    const barcodeControl = this.form.controls.barcode;
+  async ngOnInit() {
+    const barcodeControl = this.form.controls.BarCode;
     barcodeControl.setValidators(Validators.required);
     barcodeControl.disable();
-    const nameControl = this.form.controls.name;
+    const nameControl = this.form.controls.Name;
     nameControl.setValidators(Validators.required);
 
     if (this.data.mode === 'Edit') {
       const user = this.data.user as User;
       this.barcode.set(user.BarCode);
       this.form.setValue({
-        id: user.Id,
-        barcode: user.BarCode,
-        name: user.Name,
-        admin: user.Admin
+        Id: user.Id,
+        BarCode: user.BarCode,
+        Name: user.Name,
+        Admin: user.Admin
       })
+    }
+    if (this.data.isAdmin === true) {
+      this.isAdmin.set(1);
+    }
+    const users = await this.db.getUsers();
+    if (users.length === 0) {
+      this.form.controls.Admin.setValue(1);
+      this.form.controls.Admin.disable();
     }
 
     this.state.barcodeScanner$
@@ -83,9 +92,17 @@ export class CreateEditUserDialogComponent {
   }
 
   async updateUser() {
-
     this.form.enable();
     const user = this.form.value as User;
+
+    //Check if user is trying to remove the last admin
+    const users = await this.db.getUsers();
+    const admins = users.filter(x => x.Admin == 1);
+    if (admins.length === 1 && user.Admin == 0 && admins[0].Id == user.Id) {
+      this.dialogService.error(['You cannot remove the last admin.']);
+      return;
+    }
+
     await this.db.updateUser(user);
     this.closeModal(true);
   }
