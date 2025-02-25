@@ -34,23 +34,39 @@ export class HomeComponent {
     .pipe(takeUntil(this.autoUnsubscribe))
     .subscribe(async (barcode) => {
       await this.processBarcodeScan(barcode);
+      //check if card is already checked out. If so, check it in
+      if (this.scannedUser() == null && this.scannedCard()?.CheckedOut === 1) {
+        await this.checkIn();
+      }
       //perform checkout if user and card are scanned
       if (this.scannedUser() && this.scannedCard()) {
-        console.log('checkout');
-        await this.checkout();
-        await firstValueFrom(this.dialogService.info(['Checkout complete']));
-        setTimeout(() => {
-          this.resetScannedUser();
-          this.resetScannedCard();
-        }, 750);
+        await this.checkOut();
       }
     });
   }
 
-  async checkout() {
+  async checkOut() {
     const card = this.scannedCard();
     if (!card) return;
     await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 1, CheckedOutBy: this.scannedUser()?.Name, CheckedOutAt: new Date().toISOString()});
+    this.state.updateCardCount();
+    await firstValueFrom(this.dialogService.info(['Checkout complete']));
+    setTimeout(() => {
+      this.resetScannedUser();
+      this.resetScannedCard();
+    }, 750);
+  }
+
+  async checkIn() {
+    const card = this.scannedCard();
+    if (!card) return;
+    await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 0, CheckedOutBy: undefined, CheckedOutAt: undefined});
+    this.state.updateCardCount();
+    await firstValueFrom(this.dialogService.info(['Card returned']));
+    setTimeout(() => {
+      this.resetScannedUser();
+      this.resetScannedCard();
+    }, 750);
   }
 
   async processBarcodeScan(barcode: string) {

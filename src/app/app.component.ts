@@ -28,19 +28,6 @@ export class AppComponent {
   ngOnInit() {
     //Update total card count
     this.state.updateCardCount();
-
-    //Listen for barcode scanner
-    this.barcodeScanner$.subscribe(async (barcode) => {
-      console.log('Barcode scanned: ', barcode);
-
-      //Check if the barcode is an existing ordinance card that is currently checked out. If so, check in the card
-      const cards = await this.db.getCards();
-      const card = cards.find(c => c.BarCode === barcode);
-      if (card?.CheckedOut === 1) {
-        await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 0, CheckedOutBy: undefined, CheckedOutAt: undefined});
-        await firstValueFrom(this.dialogService.info(['Card returned']));
-      }
-    });
   }
 
   @HostListener('window:keypress', ['$event'])
