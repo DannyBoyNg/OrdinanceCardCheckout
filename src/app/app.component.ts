@@ -3,6 +3,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { DialogService } from '@dannyboyng/dialog';
 import { GlobalStateService } from './services/global-state.service';
 import { DatabaseService } from './services/database.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -25,15 +26,20 @@ export class AppComponent {
   }
 
   ngOnInit() {
+    //Update total card count
+    this.state.updateCardCount();
+
+    //Listen for barcode scanner
     this.barcodeScanner$.subscribe(async (barcode) => {
       console.log('Barcode scanned: ', barcode);
 
-      //Check if the barcode is an existing user or ordinance card
-      //const users = await this.db.getUsers();
-      //const cards = await this.db.getCards();
-      //const user = users.find(u => u.BarCode === barcode);
-      //const card = cards.find(c => c.BarCode === barcode);
-
+      //Check if the barcode is an existing ordinance card that is currently checked out. If so, check in the card
+      const cards = await this.db.getCards();
+      const card = cards.find(c => c.BarCode === barcode);
+      if (card?.CheckedOut === 1) {
+        await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 0, CheckedOutBy: undefined, CheckedOutAt: undefined});
+        await firstValueFrom(this.dialogService.info(['Card returned']));
+      }
     });
   }
 
@@ -61,6 +67,19 @@ export class AppComponent {
     this.state.onKeyEvent('7');
     this.state.onKeyEvent('3');
     this.state.onKeyEvent('9');
+  }
+
+  injectBarcode2() {
+    this.state.onKeyEvent('0');
+    this.state.onKeyEvent('0');
+    this.state.onKeyEvent('0');
+    this.state.onKeyEvent('1');
+    this.state.onKeyEvent('1');
+    this.state.onKeyEvent('9');
+    this.state.onKeyEvent('3');
+    this.state.onKeyEvent('7');
+    this.state.onKeyEvent('3');
+    this.state.onKeyEvent('8');
   }
 
 }

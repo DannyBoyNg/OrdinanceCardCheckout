@@ -3,7 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogService } from '@dannyboyng/dialog';
 import { Subject, takeUntil } from 'rxjs';
-import { User } from '../../../interfaces/user.interface';
 import { DatabaseService } from '../../../services/database.service';
 import { GlobalStateService } from '../../../services/global-state.service';
 import { OrdinanceCard } from '../../../interfaces/ordinace-card.interface';
@@ -29,15 +28,20 @@ export class CreateEditCardDialogComponent {
     Id: 0,
     BarCode: '',
     Language: '',
+    CheckedOut: 0,
+    CheckedOutBy: '',
+    CheckedOutAt: '',
   });
 
   async ngOnInit() {
+    //Form setup
     const barcodeControl = this.form.controls.BarCode;
     barcodeControl.setValidators(Validators.required);
     barcodeControl.disable();
     const nameControl = this.form.controls.Language;
     nameControl.setValidators(Validators.required);
 
+    //Edit mode
     if (this.data.mode === 'Edit') {
       const card = this.data.card as OrdinanceCard;
       this.barcode.set(card.BarCode);
@@ -45,8 +49,13 @@ export class CreateEditCardDialogComponent {
         Id: card.Id,
         BarCode: card.BarCode,
         Language: card.Language,
+        CheckedOut: card.CheckedOut,
+        CheckedOutBy: card.CheckedOutBy ?? null,
+        CheckedOutAt: card.CheckedOutAt ?? null,
       })
     }
+
+    //Listen for barcode scanner
     this.state.barcodeScanner$
     .pipe(takeUntil(this.autoUnsubscribe))
     .subscribe(async (barcode) => {

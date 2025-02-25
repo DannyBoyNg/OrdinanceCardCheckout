@@ -40,7 +40,10 @@ export class CreateEditUserDialogComponent {
     const nameControl = this.form.controls.Name;
     nameControl.setValidators(Validators.required);
 
-    if (this.data.mode === 'Edit') {
+    if (this.data.mode === 'Create' && this.data.barcode) {
+      this.barcode.set(this.data.barcode);
+      barcodeControl.setValue(this.data.barcode);
+    } else if (this.data.mode === 'Edit') {
       const user = this.data.user as User;
       this.barcode.set(user.BarCode);
       this.form.setValue({
@@ -72,8 +75,8 @@ export class CreateEditUserDialogComponent {
     this.autoUnsubscribe.complete();
   }
   
-  closeModal(updateCaller = false) {
-    this.dialogRef.close({updateCaller});
+  closeModal(updateCaller = false, createdUser: User|null = null) {
+    this.dialogRef.close({updateCaller, createdUser});
   }
 
   async createUser() {
@@ -88,7 +91,7 @@ export class CreateEditUserDialogComponent {
       }
       this.dialogService.error(errMsg);
     }
-    this.closeModal(true);
+    this.closeModal(true, user);
   }
 
   async updateUser() {

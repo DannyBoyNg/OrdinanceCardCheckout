@@ -1,26 +1,29 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { GlobalStateService } from '../../services/global-state.service';
-import { Subject, takeUntil } from 'rxjs';
+import { firstValueFrom, Subject, takeUntil, timer } from 'rxjs';
 import { DatabaseService } from '../../services/database.service';
 import { DialogService } from '@dannyboyng/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-admin',
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink, MatProgressSpinnerModule],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
 export class AdminComponent {
 
-  autoUnsubscribe = new Subject();
+  autoUnsubscribe = new Subject<void>();
 
   state = inject(GlobalStateService);
   db = inject(DatabaseService);
   dialog = inject(DialogService);
+  router = inject(Router);
   adminUserId = signal(0);
 
   ngOnInit() {
+    //Listen for barcode scanner
     this.state.barcodeScanner$
     .pipe(takeUntil(this.autoUnsubscribe))
     .subscribe(async (barcode) => {
@@ -35,9 +38,26 @@ export class AdminComponent {
       const user = await this.db.getUser(barcode);
       if (user && user.Admin === 1) {
         this.adminUserId.set(user.Id);
-      } else if(this.adminUserId() === 0) {
-        this.dialog.error(['The scanned barcode is not an admin.']);
+      } else {
+        if (this.adminUserId() === 0) {
+          await firstValueFrom(this.dialog.error(['The scanned barcode is not an admin.']));
+          this.router.navigate(['/']);
+        }
       }
     });
+
+    //Timer for closing page on no action or login for 1 minute
+    timer(5000)
+    .pipe(takeUntil(this.autoUnsubscribe))
+    .subscribe(_ => {
+      if (this.adminUserId() === 0) {
+        this.router.navigate(['/']);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.autoUnsubscribe.next();
+    this.autoUnsubscribe.complete();
   }
 }

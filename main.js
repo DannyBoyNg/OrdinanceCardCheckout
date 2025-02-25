@@ -15,6 +15,7 @@ process.on('uncaughtException', (error) => {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    autoHideMenuBar: true,
     width: 1600,
     minWidth: 900,
     height: 900,
@@ -111,7 +112,7 @@ const deleteUser = (id) => {
 
 //Cards
 const getCards = () => {
-  const query = `SELECT * FROM OrdinanceCards`;
+  const query = `SELECT * FROM OrdinanceCards ORDER BY barcode`;
   const readQuery = db.prepare(query);
   const rowList = readQuery.all();
   return rowList;

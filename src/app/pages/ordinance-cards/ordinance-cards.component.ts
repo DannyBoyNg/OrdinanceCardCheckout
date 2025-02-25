@@ -3,21 +3,25 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { DialogService } from '@dannyboyng/dialog';
 import { firstValueFrom } from 'rxjs';
-import { User } from '../../interfaces/user.interface';
 import { DatabaseService } from '../../services/database.service';
 import { CreateEditCardDialogComponent } from './create-edit-card-dialog/create-edit-card-dialog.component';
 import { OrdinanceCard } from '../../interfaces/ordinace-card.interface';
+import { GlobalStateService } from '../../services/global-state.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-ordinance-cards',
-  imports: [MatTableModule],
+  imports: [MatTableModule, DatePipe],
   templateUrl: './ordinance-cards.component.html',
   styleUrl: './ordinance-cards.component.css'
 })
 export class OrdinanceCardsComponent {
- readonly dialog = inject(MatDialog);
+
+  readonly dialog = inject(MatDialog);
   dialogService = inject(DialogService);
+  state = inject(GlobalStateService);
   db = inject(DatabaseService);
+  
   displayedColumns: string[] = ['code', 'language', 'status', 'action'];
   dataSource: WritableSignal<OrdinanceCard[]> = signal([]);
 
@@ -27,7 +31,6 @@ export class OrdinanceCardsComponent {
 
   async getCards() {
     const result = await this.db.getCards();
-    console.log(result);
     this.dataSource.set(result);
   }
 
@@ -43,18 +46,19 @@ export class OrdinanceCardsComponent {
     ).afterClosed().subscribe(async (result) => {
       if (result?.updateCaller) {
         await this.getCards();
+        this.state.updateCardCount();
       }
     });
   }
 
-  editCard(user: User) {
+  editCard(card: OrdinanceCard) {
     this.dialog.open(CreateEditCardDialogComponent, 
       {
         position: {top: '100px'},
         maxWidth: '100%',
         data: {
           mode: 'Edit',
-          user: user,
+          card: card,
         },
       }
     ).afterClosed().subscribe(async (result) => {
@@ -64,12 +68,13 @@ export class OrdinanceCardsComponent {
     });
   }
 
-  async deleteUser(id: number) {
-    const result = await firstValueFrom(this.dialogService.confirm('Are you sure you want to delete this user?'));
+  async deleteCard(id: number) {
+    const result = await firstValueFrom(this.dialogService.confirm('Are you sure you want to delete this card?'));
     if (result === true) {
       //Delete card
       await this.db.deleteCard(id);
       await this.getCards();
+      this.state.updateCardCount();
     }
   }  
 }

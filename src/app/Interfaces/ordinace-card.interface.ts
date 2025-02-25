@@ -2,7 +2,7 @@ export interface OrdinanceCard {
     Id: number;
     BarCode: string;
     Language: string;
-    CheckedOut: boolean;
+    CheckedOut: number;
     CheckedOutBy?: string;
     CheckedOutAt?: string;
 }

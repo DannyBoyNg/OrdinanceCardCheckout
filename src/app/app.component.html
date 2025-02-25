@@ -1,4 +1,4 @@
-<div class="header">Test</div>
+<div class="header">Ordinance Card Checkout</div>
 <div class="content">
     <div class="left">
       <button routerLink="/" routerLinkActive="active">Home</button>
@@ -10,8 +10,9 @@
     </div>
 </div>
 <div class="footer">
-  <div class="totalCards">Total cards: 0</div>
-  <div class="checkedOut">Cards checked out: 0 </div>
+  <div class="totalCards">Total cards: {{state.totalCards()}}</div>
+  <div class="checkedOut">Cards checked out: {{state.totalCardsCheckedOut()}} </div>
   <button (click)="injectBarcode()">inject</button>
+  <button (click)="injectBarcode2()">inject2</button>
   <div class="version">v1.0</div>
 </div>

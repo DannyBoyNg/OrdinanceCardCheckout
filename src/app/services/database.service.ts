@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CheckOut } from '../interfaces/checkout.interface';
 import { OrdinanceCard } from '../interfaces/ordinace-card.interface';
-import { CheckIn } from '../interfaces/checkin.interface';
 import { User } from '../interfaces/user.interface';
 
 @Injectable({
@@ -16,7 +14,7 @@ export class DatabaseService {
     return await window.sqliteAPI.invoke('getUsers', null);
   }
 
-  async getUser(barcode: string): Promise<User> {
+  async getUser(barcode: string): Promise<User|undefined> {
     return await window.sqliteAPI.invoke('getUser', barcode);
   }
 
@@ -37,7 +35,7 @@ export class DatabaseService {
     return await window.sqliteAPI.invoke('getCards', null);
   }
 
-  async getCard(barcode: string): Promise<OrdinanceCard> {
+  async getCard(barcode: string): Promise<OrdinanceCard|undefined> {
     return await window.sqliteAPI.invoke('getCard', barcode);
   }
 
