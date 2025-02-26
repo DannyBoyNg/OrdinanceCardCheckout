@@ -1,34 +1,38 @@
 <div class="content">
-    <div class="top">
-        <div class="title">To check out, please scan your recommend and an ordinance card.</div>
-        <div class="scanContainer">
-            <div class="scanBox">
-                <div class="scanTitle">
-                    <span class="scanType">User</span>
-                    @if (scannedUser()) {<span class="remove" (click)="resetScannedUser()">×</span>}
-                </div>
-                @if (scannedUser()) {
-                <div class="scannedItem">
-                    {{scannedUser()?.Name}}
-                </div>
-                }
+    <div class="title">To check out: please scan your recommend and one or more ordinance cards.</div>
+    <div class="title">To check in: please scan the ordinance card only.</div>
+    <div class="scanContainer">
+        <div class="scanBox">
+            <div class="scanTitle">
+                <span class="scanType">Worker</span>
+                @if (scannedUser()) {<span class="remove" (click)="resetScannedUser()">×</span>}
             </div>
+            @if (scannedUser()) {
+            <div class="scannedItem">
+                {{scannedUser()?.Name}}
+            </div>
+            }
+        </div>
+        @for (card of scannedCards(); track card.Id) {
+        <div class="scanBox">
+            <div class="scanTitle">
+                <span class="scanType">Card</span>
+                <span class="remove" (click)="removeScannedCard(card.Id)">×</span>
+            </div>
+            <div class="scannedItem">
+                {{card.BarCode}}<br>
+                {{card.Language}}
+            </div>
+        </div>
+        } @empty {
             <div class="scanBox">
                 <div class="scanTitle">
                     <span class="scanType">Card</span>
-                    @if (scannedCard()) {<span class="remove" (click)="resetScannedCard()">×</span>}
                 </div>
-                @if (scannedCard()) {
-                    <div class="scannedItem">
-                        {{scannedCard()?.BarCode}}<br>
-                        {{scannedCard()?.Language}}
-                    </div>
-                }
             </div>
+        }
+        <div class="checkoutBtn" (click)="checkOut()" [class.disabled]="scannedUser() == null || scannedCards().length == 0">
+            <span class="scanType">Check Out</span>
         </div>
-    </div>
-    <div class="bottom">
-        <div class="title">To check in, please scan the ordinance card only.</div>
-
     </div>
 </div>

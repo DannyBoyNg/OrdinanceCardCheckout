@@ -1,39 +1,26 @@
 .content {
-    width: 100%;
-    height: 100%;
-}
-.top {
     width: calc(100% - 40px);
-    height: calc(50% - 40px);
-    background-color: aliceblue;
-    padding: 20px;
-}
-.bottom {
-    width: calc(100% - 40px);
-    height: calc(50% - 40px);
-    background-color: aliceblue;
+    height: calc(100% - 40px);
     padding: 20px;
 }
 .title {
     color: #0078D7;
     font-family: 'Segoe UI';
     font-size: 30px;
-    font-weight: 500;
 }
 .scanContainer {
-    width: 80%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 230px));
+    padding: 2px;
 }
 .scanBox {
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
     border-radius: 10px;
     border: solid 1px #bbb;
     background-color: #eee;
     padding: 10px;
+    margin-top: 7px;
 }
 .scanTitle {
     position: relative;
@@ -65,4 +52,24 @@
     text-align: right;
     cursor: pointer;
     padding-right: 5px;
+}
+.checkoutBtn {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+    border: solid 1px #bbb;
+    padding: 10px;
+    margin-top: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    color: #0078D7;
+    font-weight: 500;
+    background-color: #ddd;
+}
+.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }

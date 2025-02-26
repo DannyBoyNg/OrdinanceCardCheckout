@@ -47,7 +47,7 @@ export class AdminComponent {
     });
 
     //Timer for closing page on no action or login for 1 minute
-    timer(5000)
+    timer(60000)
     .pipe(takeUntil(this.autoUnsubscribe))
     .subscribe(_ => {
       if (this.adminUserId() === 0) {

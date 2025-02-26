@@ -26,7 +26,7 @@ export class HomeComponent {
   
   //local state
   scannedUser = signal<User|null>(null);
-  scannedCard = signal<OrdinanceCard|null>(null);
+  scannedCards = signal<OrdinanceCard[]>([]);
 
   ngOnInit() {
     //listen for barcode scanner
@@ -34,21 +34,19 @@ export class HomeComponent {
     .pipe(takeUntil(this.autoUnsubscribe))
     .subscribe(async (barcode) => {
       await this.processBarcodeScan(barcode);
-      //check if card is already checked out. If so, check it in
-      if (this.scannedUser() == null && this.scannedCard()?.CheckedOut === 1) {
-        await this.checkIn();
-      }
-      //perform checkout if user and card are scanned
-      if (this.scannedUser() && this.scannedCard()) {
-        await this.checkOut();
-      }
     });
   }
 
   async checkOut() {
-    const card = this.scannedCard();
-    if (!card) return;
-    await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 1, CheckedOutBy: this.scannedUser()?.Name, CheckedOutAt: new Date().toISOString()});
+    const user = this.scannedUser();
+    const cards = this.scannedCards();
+    if (user == null || cards.length == 0) return;
+
+    const checkOutDate = new Date().toISOString();
+    for (var card of cards) {
+      await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 1, CheckedOutBy: user.Name, CheckedOutAt: checkOutDate});
+    }
+    
     this.state.updateCardCount();
     await firstValueFrom(this.dialogService.info(['Checkout complete']));
     setTimeout(() => {
@@ -57,8 +55,7 @@ export class HomeComponent {
     }, 750);
   }
 
-  async checkIn() {
-    const card = this.scannedCard();
+  async checkIn(card: OrdinanceCard) {
     if (!card) return;
     await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 0, CheckedOutBy: undefined, CheckedOutAt: undefined});
     this.state.updateCardCount();
@@ -72,16 +69,21 @@ export class HomeComponent {
   async processBarcodeScan(barcode: string) {
     const card = await this.db.getCard(barcode);
     const user = await this.db.getUser(barcode);
-    if (card) {
-      this.scannedCard.set(card);
-    } else if (user) {
+    if (this.scannedUser() == null && card?.CheckedOut === 1) { //Barcode in a card that is already checked out. Check it in
+      this.checkIn(card);
+    } else if (card) { //Barcode is a card. Add to list to check out later
+      this.scannedCards.update(x => {
+        if (!x.find(y => y.Id === card.Id)) x.push(card);
+        return [...x];
+      });
+    } else if (user) { //Barcode is a user. Set scanned user
       this.scannedUser.set(user);
-    } else {
+    } else { //Unknown barcode
       const choices = [
-        {'key': 'CreateUser', 'value': 'Create user'},
+        {'key': 'CreateUser', 'value': 'Create worker'},
         //{'key': 'CreateCard', 'value': 'Create card'}
       ];
-      const response = await firstValueFrom(this.dialogService.choice(['Barcode not recognized. If this is a new user, please create a new user'], choices));
+      const response = await firstValueFrom(this.dialogService.choice(['Barcode not recognized. If this is a new worker, please create a new worker'], choices));
       if (response === 'CreateUser') {
         this.dialog.open(CreateEditUserDialogComponent, 
           {
@@ -111,6 +113,10 @@ export class HomeComponent {
   }
 
   resetScannedCard() {
-    this.scannedCard.set(null);
+    this.scannedCards.set([]);
+  }
+
+  removeScannedCard(id: number) {
+    this.scannedCards.update(x => x.filter(y => y.Id !== id));
   }
 }
