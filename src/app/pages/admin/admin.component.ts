@@ -40,7 +40,7 @@ export class AdminComponent {
         this.adminUserId.set(user.Id);
       } else {
         if (this.adminUserId() === 0) {
-          await firstValueFrom(this.dialog.error(['The scanned barcode is not an admin.']));
+          await firstValueFrom(this.dialog.error(['Access denied.']));
           this.router.navigate(['/']);
         }
       }
