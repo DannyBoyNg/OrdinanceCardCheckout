@@ -4,7 +4,7 @@ import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { User } from '../../interfaces/user.interface';
 import { OrdinanceCard } from '../../interfaces/ordinace-card.interface';
 import { DatabaseService } from '../../services/database.service';
-import { DialogService } from '@dannyboyng/dialog';
+import { Dialog, DialogService, DialogType } from '@dannyboyng/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateEditUserDialogComponent } from '../users/create-edit-user-dialog/create-edit-user-dialog.component';
 
@@ -49,7 +49,12 @@ export class HomeComponent {
     }
     
     this.state.updateCardCount();
-    await firstValueFrom(this.dialogService.info(['Checkout complete']));
+    const dialog: Dialog = {
+      type: DialogType.Info,
+      message: 'Checkout complete',
+      autoClose: 5
+    }
+    await firstValueFrom(this.dialogService.open(dialog));
     setTimeout(() => {
       this.resetScannedUser();
       this.resetScannedCard();
@@ -63,7 +68,12 @@ export class HomeComponent {
     await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 0, CheckedOutBy: undefined, CheckedOutAt: undefined});
     await this.db.createLog({Id: 0, Timestamp: checkInDate, Action: 'CheckIn', UserId: userId, CardId: card.Id});
     this.state.updateCardCount();
-    await firstValueFrom(this.dialogService.info(['Card returned']));
+    const dialog: Dialog = {
+      type: DialogType.Info,
+      message: 'Card returned',
+      autoClose: 3
+    }
+    await firstValueFrom(this.dialogService.open(dialog));
     setTimeout(() => {
       this.resetScannedUser();
       this.resetScannedCard();

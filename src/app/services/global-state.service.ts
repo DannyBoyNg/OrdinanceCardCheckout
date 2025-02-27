@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { bufferTime, filter, map, Subject } from "rxjs";
 import { DatabaseService } from "./database.service";
 
@@ -17,7 +17,8 @@ export class GlobalStateService {
     );
 
     totalCards = signal(0);
-    totalCardsCheckedOut = signal(0);
+    cardsCheckedOut = signal(0);
+    cardsAvailable = computed(() => this.totalCards() - this.cardsCheckedOut())
 
     onKeyEvent(key: string) {
         this.keyEventStream.next(key);
@@ -26,7 +27,7 @@ export class GlobalStateService {
     updateCardCount() {
         this.db.getCards().then(cards => {
             this.totalCards.set(cards.length);
-            this.totalCardsCheckedOut.set(cards.filter(c => c.CheckedOut === 1).length);
+            this.cardsCheckedOut.set(cards.filter(c => c.CheckedOut === 1).length);
         });
     }
 

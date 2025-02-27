@@ -16,7 +16,7 @@
         @for (card of scannedCards(); track card.Id) {
         <div class="scanBox">
             <div class="scanTitle">
-                <span class="scanType">Card</span>
+                <span class="scanType"> Ordinance Card </span>
                 <span class="remove" (click)="removeScannedCard(card.Id)">×</span>
             </div>
             <div class="scannedItem">
@@ -27,7 +27,7 @@
         } @empty {
             <div class="scanBox">
                 <div class="scanTitle">
-                    <span class="scanType">Card</span>
+                    <span class="scanType"> Ordinance Card </span>
                 </div>
             </div>
         }
