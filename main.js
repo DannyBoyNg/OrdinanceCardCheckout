@@ -67,6 +67,8 @@ ipcMain.handle('getCard', async (_, arg) => getCard(arg));
 ipcMain.handle('createCard', async (_, arg) => createCard(arg));
 ipcMain.handle('updateCard', async (_, arg) => updateCard(arg));
 ipcMain.handle('deleteCard', async (_, arg) => deleteCard(arg));
+ipcMain.handle('getLogs', async (_, arg) => getLogs(arg));
+ipcMain.handle('createLog', async (_, arg) => createLog(arg));
 
 //Users
 const getUsers = () => {
@@ -145,6 +147,23 @@ const deleteCard = (id) => {
   const deleteQuery = db.prepare(`DELETE FROM OrdinanceCards WHERE id = ?`);
   const transaction = db.transaction(() => {
       deleteQuery.run(id);
+  });
+  transaction();
+}
+
+//Logs
+const getLogs = () => {
+  const query = `SELECT timestamp, action, ordinanceCards.barcode, users.name FROM logs LEFT JOIN users on logs.userId = users.Id LEFT JOIN ordinanceCards on logs.cardId = ordinanceCards.Id ORDER BY timestamp DESC LIMIT 1000`;
+  const readQuery = db.prepare(query);
+  const rowList = readQuery.all();
+  return rowList;
+}
+
+const createLog = (log) => {
+  const query = `INSERT INTO logs (timestamp, action, cardId, userId) VALUES (@Timestamp, @Action, @CardId, @UserId)`;
+  const insertQuery = db.prepare(query);
+  const transaction = db.transaction(() => {
+      insertQuery.run(log);
   });
   transaction();
 }

@@ -45,6 +45,7 @@ export class HomeComponent {
     const checkOutDate = new Date().toISOString();
     for (var card of cards) {
       await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 1, CheckedOutBy: user.Name, CheckedOutAt: checkOutDate});
+      await this.db.createLog({Id: 0, Timestamp: checkOutDate, Action: 'CheckOut', UserId: user.Id, CardId: card.Id});
     }
     
     this.state.updateCardCount();
@@ -57,7 +58,9 @@ export class HomeComponent {
 
   async checkIn(card: OrdinanceCard) {
     if (!card) return;
+    const checkInDate = new Date().toISOString();
     await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 0, CheckedOutBy: undefined, CheckedOutAt: undefined});
+    await this.db.createLog({Id: 0, Timestamp: checkInDate, Action: 'CheckIn', UserId: undefined, CardId: card.Id});
     this.state.updateCardCount();
     await firstValueFrom(this.dialogService.info(['Card returned']));
     setTimeout(() => {

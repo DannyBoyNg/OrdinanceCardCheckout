@@ -1,8 +1,10 @@
 .container {
     padding: 0 40px;
 }
-table{
+.tableContainer {
     border: solid 1px #74777f;
+    min-height: 600px;
+    height: auto;
 }
 tr.mat-mdc-row, tr.mat-mdc-header-row {
     border: 1px solid #e7e7e7;
@@ -18,6 +20,9 @@ tr.mat-mdc-row, tr.mat-mdc-header-row {
     width: 100px;
     margin-left: 5px;
 }
-.mat-column-action {
-    width: 245px;
+.red {
+    color: crimson;
+}
+.green {
+    color: green;
 }

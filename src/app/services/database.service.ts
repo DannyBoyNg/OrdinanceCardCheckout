@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OrdinanceCard } from '../interfaces/ordinace-card.interface';
 import { User } from '../interfaces/user.interface';
+import { Log } from '../interfaces/log.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -39,16 +40,25 @@ export class DatabaseService {
     return await window.sqliteAPI.invoke('getCard', barcode);
   }
 
-  async createCard(card: OrdinanceCard) {
+  async createCard(card: OrdinanceCard): Promise<void> {
     return await window.sqliteAPI.invoke('createCard', card);
   }
 
-  async updateCard(card: OrdinanceCard) {
+  async updateCard(card: OrdinanceCard): Promise<void> {
     return await window.sqliteAPI.invoke('updateCard', card);
   }
 
-  async deleteCard(id: number) {
+  async deleteCard(id: number): Promise<void> {
     return await window.sqliteAPI.invoke('deleteCard', id);
+  }
+
+  //Logs
+  async getLogs(): Promise<Log[]> {
+    return await window.sqliteAPI.invoke('getLogs', null);
+  }
+
+  async createLog(log: Log): Promise<void> {
+    return await window.sqliteAPI.invoke('createLog', log);
   }
 
 }

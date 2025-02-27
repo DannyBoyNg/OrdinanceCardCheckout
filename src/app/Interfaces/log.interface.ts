@@ -1,7 +1,10 @@
 export interface Log {
     Id: number;
-    DateTime: string;
+    Timestamp: string;
     Action: string;
     UserId?: number;
     CardId: number;
+
+    Name?: string;
+    BarCode?: string;
 }
