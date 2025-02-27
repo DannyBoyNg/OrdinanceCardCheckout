@@ -69,6 +69,7 @@ ipcMain.handle('updateCard', async (_, arg) => updateCard(arg));
 ipcMain.handle('deleteCard', async (_, arg) => deleteCard(arg));
 ipcMain.handle('getLogs', async (_, arg) => getLogs(arg));
 ipcMain.handle('createLog', async (_, arg) => createLog(arg));
+ipcMain.handle('getUserIdFromLastCheckOutByCardId', async (_, arg) => getUserIdFromLastCheckOutByCardId(arg));
 
 //Users
 const getUsers = () => {
@@ -166,4 +167,10 @@ const createLog = (log) => {
       insertQuery.run(log);
   });
   transaction();
+}
+
+const getUserIdFromLastCheckOutByCardId = (cardId) => {
+  const query = `SELECT userId FROM logs WHERE cardId = ? AND action = 'CheckOut' ORDER BY timestamp DESC LIMIT 1`;
+  const stmt = db.prepare(query);
+  return stmt.get(cardId);
 }
