@@ -1,11 +1,45 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow } = require('electron');
 const path = require('node:path');
+const fs = require('node:fs');
+const Database = require('better-sqlite3');
+
+const createTableLogs = `CREATE TABLE IF NOT EXISTS "Logs" (
+	"Id"	INTEGER NOT NULL UNIQUE,
+	"Timestamp"	TEXT NOT NULL,
+	"Action"	TEXT NOT NULL,
+	"UserId"	INTEGER,
+	"CardId"	INTEGER NOT NULL,
+	PRIMARY KEY("Id" AUTOINCREMENT)
+)`;
+const createTableUsers = `CREATE TABLE IF NOT EXISTS "Users" (
+	"Id"	INTEGER NOT NULL UNIQUE,
+	"Name"	TEXT NOT NULL,
+	"BarCode"	TEXT NOT NULL UNIQUE,
+	"Admin"	INTEGER NOT NULL DEFAULT 0,
+	PRIMARY KEY("Id" AUTOINCREMENT)
+)`;
+const createTableCards = `CREATE TABLE IF NOT EXISTS "OrdinanceCards" (
+	"Id"	INTEGER NOT NULL UNIQUE,
+	"BarCode"	TEXT NOT NULL UNIQUE,
+	"Language"	TEXT NOT NULL,
+	"CheckedOut"	INTEGER NOT NULL DEFAULT 0,
+	"CheckedOutBy"	TEXT,
+	"CheckedOutAt"	TEXT,
+	PRIMARY KEY("Id" AUTOINCREMENT)
+)`;
+
+const createTables = (!fs.existsSync('./databaseV1.db'));
 
 // Sqlite3 Database
-const Database = require('better-sqlite3');
-const db = new Database('public/databaseV1.db');
+const db = new Database('./databaseV1.db');
 db.pragma('journal_mode = WAL');
+
+if (createTables) {
+  db.exec(createTableLogs);
+  db.exec(createTableUsers);
+  db.exec(createTableCards);
+}
 
 // Error Handling
 process.on('uncaughtException', (error) => {
@@ -17,7 +51,7 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     autoHideMenuBar: true,
     width: 1600,
-    minWidth: 900,
+    minWidth: 1000,
     height: 900,
     minHeight: 700,
     fullscreen: true,
