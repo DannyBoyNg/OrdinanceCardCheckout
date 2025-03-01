@@ -11,7 +11,7 @@ export class GlobalStateService {
 
     private keyEventStream = new Subject<string>();
     public barcodeScanner$ = this.keyEventStream.pipe(
-        bufferTime(200),
+        bufferTime(500),
         filter(x => x.length === 10),
         map(x => x.join(''))
     );

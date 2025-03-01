@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, signal, ViewContainerRef } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { DialogService } from '@dannyboyng/dialog';
 import { GlobalStateService } from './services/global-state.service';
@@ -20,6 +20,7 @@ export class AppComponent {
   db = inject(DatabaseService);
 
   barcodeScanner$ = this.state.barcodeScanner$;
+  clock = signal('');
 
   constructor() {
     this.dialogService.setViewContainerRef(this.vcr);
@@ -28,6 +29,8 @@ export class AppComponent {
   ngOnInit() {
     //Update total card count
     this.state.updateCardCount();
+
+    this.startClock();
   }
 
   @HostListener('window:keypress', ['$event'])
@@ -43,30 +46,11 @@ export class AppComponent {
     window.close();
   }
 
-  injectBarcode() {
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('9');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('7');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('9');
-  }
-
-  injectBarcode2() {
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('9');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('7');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('8');
+  startClock() {
+    setInterval(() => {
+      const d = new Date();
+      this.clock.set(`${d.toLocaleTimeString()}`);
+    }, 1000);
   }
 
 }

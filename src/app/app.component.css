@@ -75,3 +75,10 @@
   float: left;
   margin-left: 140px;
 }
+.clock {
+  float: right;
+  margin-right: 20px;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 35px;
+}
