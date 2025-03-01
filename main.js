@@ -49,12 +49,14 @@ process.on('uncaughtException', (error) => {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    icon: path.join(__dirname, '/public/favicon.ico'),
     autoHideMenuBar: true,
     width: 1600,
     minWidth: 1000,
     height: 900,
     minHeight: 700,
     fullscreen: true,
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -63,7 +65,11 @@ const createWindow = () => {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadFile('dist/ordinance-card-checkout/browser/index.html')
+  mainWindow.loadFile('dist/ordinance-card-checkout/browser/index.html');
+  mainWindow.once('ready-to-show', () => {
+    //splash.destroy();
+    mainWindow.show();
+  });
 
   // Open the DevTools.
   //mainWindow.webContents.openDevTools()

@@ -1,5 +1,6 @@
 {
   "name": "ordinance-card-checkout",
+  "productName": "Ordinance card checkout",
   "version": "1.0.0",
   "description": "Ordinance card checkout system",
   "main": "main.js",
