@@ -109,30 +109,4 @@ export class CreateEditUserDialogComponent {
     await this.db.updateUser(user);
     this.closeModal(true);
   }
-
-  inject() {
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('9');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('7');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('9');
-  }
-
-  inject2() {
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('9');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('7');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('8');
-  }
 }

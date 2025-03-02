@@ -105,6 +105,7 @@ ipcMain.handle('deleteCard', async (_, arg) => deleteCard(arg));
 ipcMain.handle('getLogs', async (_, arg) => getLogs(arg));
 ipcMain.handle('createLog', async (_, arg) => createLog(arg));
 ipcMain.handle('getUserIdFromLastCheckOutByCardId', async (_, arg) => getUserIdFromLastCheckOutByCardId(arg));
+ipcMain.handle('getUsedLanguagesList', async (_, arg) => getUsedLanguagesList(arg));
 
 //Users
 const getUsers = () => {
@@ -204,8 +205,16 @@ const createLog = (log) => {
   transaction();
 }
 
+//Custom
 const getUserIdFromLastCheckOutByCardId = (cardId) => {
   const query = `SELECT userId FROM logs WHERE cardId = ? AND action = 'CheckOut' ORDER BY timestamp DESC LIMIT 1`;
   const stmt = db.prepare(query);
   return stmt.get(cardId);
+}
+
+const getUsedLanguagesList = () => {
+  const query = `SELECT language FROM OrdinanceCards GROUP BY language`;
+  const readQuery = db.prepare(query);
+  const languageList = readQuery.all();
+  return languageList;
 }

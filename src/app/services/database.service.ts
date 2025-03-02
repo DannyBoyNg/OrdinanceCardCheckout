@@ -61,9 +61,14 @@ export class DatabaseService {
     return await window.sqliteAPI.invoke('createLog', log);
   }
 
+  //Custom
   async getUserIdFromLastCheckoutByCardId(cardId: number): Promise<number> {
     const result = await window.sqliteAPI.invoke('getUserIdFromLastCheckOutByCardId', cardId);
     return result?.UserId;
+  }
+
+  async getUsedLanguagesList(): Promise<string[]> {
+    return await window.sqliteAPI.invoke('getUsedLanguagesList', null);
   }
 
 }

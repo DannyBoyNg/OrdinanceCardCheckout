@@ -32,8 +32,12 @@ export class CreateEditCardDialogComponent {
     CheckedOutBy: '',
     CheckedOutAt: '',
   });
+  usedLanguages = signal<string[]>([]);
 
   async ngOnInit() {
+    //Get used languages
+    await this.getUsedLanguages();
+
     //Form setup
     const barcodeControl = this.form.controls.BarCode;
     barcodeControl.setValidators(Validators.required);
@@ -73,6 +77,16 @@ export class CreateEditCardDialogComponent {
     this.dialogRef.close({updateCaller});
   }
 
+  async getUsedLanguages() {
+    this.usedLanguages.set(await this.db.getUsedLanguagesList());
+  }
+
+  onSelectLanguage(language: string)
+  {
+    const control = this.form.controls.Language;
+    control.setValue(language);
+  }
+
   async createCard() {
     this.form.enable();
     const card = this.form.value as OrdinanceCard;
@@ -80,6 +94,9 @@ export class CreateEditCardDialogComponent {
       await this.db.createCard(card);
     } catch(ex) {
       let errMsg = 'Cannot create card: An unknown error has occurred.';
+      if (ex == "Error: Error invoking remote method 'createCard': SqliteError: UNIQUE constraint failed: OrdinanceCards.BarCode") {
+        errMsg = 'Cannot create card: Ordinance card already exist.';
+      }      
       this.dialogService.error(errMsg);
     }
     this.closeModal(true);
@@ -91,31 +108,4 @@ export class CreateEditCardDialogComponent {
     await this.db.updateCard(card);
     this.closeModal(true);
   }
-
-  inject() {
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('9');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('7');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('9');
-  }
-
-  inject2() {
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('0');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('1');
-    this.state.onKeyEvent('9');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('7');
-    this.state.onKeyEvent('3');
-    this.state.onKeyEvent('8');
-  }
-
 }
