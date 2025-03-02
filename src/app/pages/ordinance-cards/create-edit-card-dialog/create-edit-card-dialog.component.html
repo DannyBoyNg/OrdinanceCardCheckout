@@ -17,10 +17,11 @@
           </tr>
           <tr>
             <td><label>Language</label></td>
-            <td>
-              <input formControlName="Language" type="text" id="language" />
+            <td style="position: relative;">
+              <input #language formControlName="Language" type="text" id="language" />
               @if (usedLanguages().length > 0) {
-                <select #dropdown (change)="onSelectLanguage(dropdown.value)">
+                <select class="language" #dropdown (change)="onSelectLanguage(dropdown.value)">
+                  <option></option>
                   @for (item of usedLanguages(); track item) {
                     <option>{{item}}</option>
                   }

@@ -216,5 +216,5 @@ const getUsedLanguagesList = () => {
   const query = `SELECT language FROM OrdinanceCards GROUP BY language`;
   const readQuery = db.prepare(query);
   const languageList = readQuery.all();
-  return languageList;
+  return languageList.map(x => x.Language);
 }
