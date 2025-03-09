@@ -31,6 +31,11 @@ const createTableCards = `CREATE TABLE IF NOT EXISTS "OrdinanceCards" (
 
 const createTables = (!fs.existsSync('./databaseV1.db'));
 
+// Single instance
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+}
+
 // Sqlite3 Database
 const db = new Database('./databaseV1.db');
 db.pragma('journal_mode = WAL');

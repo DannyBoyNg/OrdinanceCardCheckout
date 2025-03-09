@@ -12,3 +12,7 @@ only need to do this once
 
 3. npm run electron
 this will start the project
+
+-------------------
+To build for production
+1. npm run make
