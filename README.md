@@ -12,6 +12,7 @@ only need to do this once
 
 3. ng build
 this will build the angular project
+if needed install the angular cli: npm i -g @angular/cli
 
 4. npm run electron
 this will start the project
