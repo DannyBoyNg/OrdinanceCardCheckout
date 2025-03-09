@@ -10,7 +10,10 @@ depends on your OS which one you need
 this will rebuild some packages to work with the current version of electron
 only need to do this once
 
-3. npm run electron
+3. ng build
+this will build the angular project
+
+4. npm run electron
 this will start the project
 
 -------------------
