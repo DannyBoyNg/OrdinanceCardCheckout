@@ -3,7 +3,6 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { DialogService } from '@dannyboyng/dialog';
 import { GlobalStateService } from './services/global-state.service';
 import { DatabaseService } from './services/database.service';
-import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +23,9 @@ export class AppComponent {
 
   constructor() {
     this.dialogService.setViewContainerRef(this.vcr);
+
+    //Expose function to dev console. only for testing purposes only.
+    (window as any).scanCode = this.scanCode.bind(this);
   }
 
   ngOnInit() {
@@ -51,6 +53,14 @@ export class AppComponent {
       const d = new Date();
       this.clock.set(`${d.toLocaleTimeString()}`);
     }, 1000);
+  }
+
+  //only for testing purposes
+  scanCode(code: string) {
+    for (let char of code) {
+      this.state.onKeyEvent(char);
+    }
+    console.log(`code: ${code} scanned.`);
   }
 
 }

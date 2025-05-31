@@ -71,4 +71,8 @@ export class DatabaseService {
     return await window.sqliteAPI.invoke('getUsedLanguagesList', null);
   }
 
+  async getUsedTitlesList(): Promise<string[]> {
+    return await window.sqliteAPI.invoke('getUsedTitlesList', null);
+  }
+
 }

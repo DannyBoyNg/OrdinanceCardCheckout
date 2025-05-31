@@ -27,16 +27,19 @@ export class CreateEditCardDialogComponent {
   form = this.fb.group({
     Id: 0,
     BarCode: '',
+    Title: '',
     Language: '',
     CheckedOut: 0,
     CheckedOutBy: '',
     CheckedOutAt: '',
   });
   usedLanguages = signal<string[]>([]);
+  usedTitles = signal<string[]>([]);
 
   async ngOnInit() {
-    //Get used languages
+    //Get used languages/titles
     await this.getUsedLanguages();
+    await this.getUsedTitles();
 
     //Form setup
     const barcodeControl = this.form.controls.BarCode;
@@ -52,6 +55,7 @@ export class CreateEditCardDialogComponent {
       this.form.setValue({
         Id: card.Id,
         BarCode: card.BarCode,
+        Title: card.Title ?? null,
         Language: card.Language,
         CheckedOut: card.CheckedOut,
         CheckedOutBy: card.CheckedOutBy ?? null,
@@ -81,10 +85,20 @@ export class CreateEditCardDialogComponent {
     this.usedLanguages.set(await this.db.getUsedLanguagesList());
   }
 
+  async getUsedTitles() {
+    this.usedTitles.set(await this.db.getUsedTitlesList());
+  }
+
   onSelectLanguage(language: string)
   {
     const control = this.form.controls.Language;
     control.setValue(language);
+  }
+
+  onSelectTitle(title: string)
+  {
+    const control = this.form.controls.Title;
+    control.setValue(title);
   }
 
   async createCard() {

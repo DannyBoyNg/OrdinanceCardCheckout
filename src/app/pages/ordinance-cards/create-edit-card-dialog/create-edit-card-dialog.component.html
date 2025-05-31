@@ -16,14 +16,28 @@
             </td>
           </tr>
           <tr>
+            <td><label>Title</label></td>
+            <td style="position: relative;">
+              <input #title formControlName="Title" type="text" id="title" />
+              @if (usedTitles().length > 0) {
+                <select class="title" #dropdownTitle (change)="onSelectTitle(dropdownTitle.value)">
+                  <option></option>
+                  @for (item of usedTitles(); track item) {
+                    <option [attr.selected]="item === title.value ? '' : null">{{item}}</option>
+                  }
+                </select>
+              }
+            </td>
+          </tr>
+          <tr>
             <td><label>Language</label></td>
             <td style="position: relative;">
               <input #language formControlName="Language" type="text" id="language" />
               @if (usedLanguages().length > 0) {
-                <select class="language" #dropdown (change)="onSelectLanguage(dropdown.value)">
+                <select class="language" #dropdownLanguage (change)="onSelectLanguage(dropdownLanguage.value)">
                   <option></option>
                   @for (item of usedLanguages(); track item) {
-                    <option>{{item}}</option>
+                    <option [attr.selected]="item === language.value ? '' : null">{{item}}</option>
                   }
                 </select>
               }

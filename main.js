@@ -22,6 +22,7 @@ const createTableUsers = `CREATE TABLE IF NOT EXISTS "Users" (
 const createTableCards = `CREATE TABLE IF NOT EXISTS "OrdinanceCards" (
 	"Id"	INTEGER NOT NULL UNIQUE,
 	"BarCode"	TEXT NOT NULL UNIQUE,
+	"Title"	TEXT,
 	"Language"	TEXT NOT NULL,
 	"CheckedOut"	INTEGER NOT NULL DEFAULT 0,
 	"CheckedOutBy"	TEXT,
@@ -44,6 +45,14 @@ if (createTables) {
   db.exec(createTableLogs);
   db.exec(createTableUsers);
   db.exec(createTableCards);
+}
+
+// Check if column Title exists on table OrdinanceCards (upgrade db if needed)
+const dbV2Check = `SELECT name FROM pragma_table_info('OrdinanceCards') WHERE name = 'Title';`
+const stmt = db.prepare(dbV2Check);
+const result = stmt.get();
+if (result == null) {
+  db.exec(`ALTER TABLE OrdinanceCards ADD COLUMN Title TEXT;`);
 }
 
 // Error Handling
@@ -72,7 +81,7 @@ const createWindow = () => {
   mainWindow.loadFile('dist/ordinance-card-checkout/browser/index.html');
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -111,6 +120,7 @@ ipcMain.handle('getLogs', async (_, arg) => getLogs(arg));
 ipcMain.handle('createLog', async (_, arg) => createLog(arg));
 ipcMain.handle('getUserIdFromLastCheckOutByCardId', async (_, arg) => getUserIdFromLastCheckOutByCardId(arg));
 ipcMain.handle('getUsedLanguagesList', async (_, arg) => getUsedLanguagesList(arg));
+ipcMain.handle('getUsedTitlesList', async (_, arg) => getUsedTitlesList(arg));
 
 //Users
 const getUsers = () => {
@@ -128,7 +138,7 @@ const getUser = (barcode) => {
 
 const createUser = (user) => {
   const count = getUsers().length;
-  const sql1 = `INSERT INTO users (name, barcode) VALUES (@Name, @BarCode)`;
+  const sql1 = `INSERT INTO users (name, barcode, admin) VALUES (@Name, @BarCode, @Admin)`;
   const sql2 = `INSERT INTO users (name, barcode, admin) VALUES (@Name, @BarCode, 1)`;
   const sql = (count == 0) ? sql2 : sql1;
   const insertQuery = db.prepare(sql);
@@ -169,7 +179,7 @@ const getCard = (barcode) => {
 }
 
 const createCard = (card) => {
-  const query = `INSERT INTO OrdinanceCards (barcode, Language) VALUES (@BarCode, @Language)`;
+  const query = `INSERT INTO OrdinanceCards (barcode, title, language) VALUES (@BarCode, @Title, @Language)`;
   const insertQuery = db.prepare(query);
   const transaction = db.transaction(() => {
       insertQuery.run(card);
@@ -178,7 +188,7 @@ const createCard = (card) => {
 }
 
 const updateCard = (card) => {
-  const updateQuery = db.prepare(`UPDATE OrdinanceCards SET barcode = @BarCode, language = @Language, checkedOut = @CheckedOut, checkedOutBy = @CheckedOutBy, checkedOutAt = @CheckedOutAt WHERE id = @Id`);
+  const updateQuery = db.prepare(`UPDATE OrdinanceCards SET barcode = @BarCode, title = @Title, language = @Language, checkedOut = @CheckedOut, checkedOutBy = @CheckedOutBy, checkedOutAt = @CheckedOutAt WHERE id = @Id`);
   const transaction = db.transaction(() => {
       updateQuery.run(card);
   });
@@ -218,8 +228,15 @@ const getUserIdFromLastCheckOutByCardId = (cardId) => {
 }
 
 const getUsedLanguagesList = () => {
-  const query = `SELECT language FROM OrdinanceCards GROUP BY language`;
+  const query = `SELECT language FROM OrdinanceCards WHERE TRIM(language) is not '' GROUP BY language`;
   const readQuery = db.prepare(query);
   const languageList = readQuery.all();
   return languageList.map(x => x.Language);
+}
+
+const getUsedTitlesList = () => {
+  const query = `SELECT title FROM OrdinanceCards WHERE title is not null and TRIM(title) is not '' GROUP BY title`;
+  const readQuery = db.prepare(query);
+  const titleList = readQuery.all();
+  return titleList.map(x => x.Title);
 }

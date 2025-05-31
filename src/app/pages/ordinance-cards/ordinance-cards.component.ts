@@ -22,7 +22,7 @@ export class OrdinanceCardsComponent {
   state = inject(GlobalStateService);
   db = inject(DatabaseService);
   
-  displayedColumns: string[] = ['code', 'language', 'status', 'action'];
+  displayedColumns: string[] = ['code', 'title', 'language', 'status', 'action'];
   dataSource: WritableSignal<OrdinanceCard[]> = signal([]);
 
   async ngOnInit() {
