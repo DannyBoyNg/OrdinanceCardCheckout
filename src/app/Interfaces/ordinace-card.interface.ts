@@ -5,5 +5,6 @@ export interface OrdinanceCard {
     Language: string;
     CheckedOut: number;
     CheckedOutBy?: string;
+    CheckedOutTo?: string;
     CheckedOutAt?: string;
 }

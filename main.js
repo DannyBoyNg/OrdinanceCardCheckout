@@ -26,6 +26,7 @@ const createTableCards = `CREATE TABLE IF NOT EXISTS "OrdinanceCards" (
 	"Language"	TEXT NOT NULL,
 	"CheckedOut"	INTEGER NOT NULL DEFAULT 0,
 	"CheckedOutBy"	TEXT,
+	"CheckedOutTo"	TEXT,
 	"CheckedOutAt"	TEXT,
 	PRIMARY KEY("Id" AUTOINCREMENT)
 )`;
@@ -49,10 +50,17 @@ if (createTables) {
 
 // Check if column Title exists on table OrdinanceCards (upgrade db if needed)
 const dbV2Check = `SELECT name FROM pragma_table_info('OrdinanceCards') WHERE name = 'Title';`
-const stmt = db.prepare(dbV2Check);
-const result = stmt.get();
-if (result == null) {
+const stmt2 = db.prepare(dbV2Check);
+const result2 = stmt2.get();
+if (result2 == null) {
   db.exec(`ALTER TABLE OrdinanceCards ADD COLUMN Title TEXT;`);
+}
+// Check if column CheckedOutTo exists on table OrdinanceCards (upgrade db if needed)
+const dbV3Check = `SELECT name FROM pragma_table_info('OrdinanceCards') WHERE name = 'CheckedOutTo';`
+const stmt3 = db.prepare(dbV3Check);
+const result3 = stmt3.get();
+if (result3 == null) {
+  db.exec(`ALTER TABLE OrdinanceCards ADD COLUMN CheckedOutTo TEXT;`);
 }
 
 // Error Handling

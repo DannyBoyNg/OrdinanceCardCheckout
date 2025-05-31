@@ -7,10 +7,11 @@ import { DatabaseService } from '../../services/database.service';
 import { Dialog, DialogService, DialogType } from '@dannyboyng/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateEditUserDialogComponent } from '../users/create-edit-user-dialog/create-edit-user-dialog.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -25,6 +26,7 @@ export class HomeComponent {
   dialog = inject(MatDialog);
   
   //local state
+  borrower = '';
   scannedUser = signal<User|null>(null);
   scannedCards = signal<OrdinanceCard[]>([]);
 
@@ -44,7 +46,7 @@ export class HomeComponent {
 
     const checkOutDate = new Date().toISOString();
     for (var card of cards) {
-      await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 1, CheckedOutBy: user.Name, CheckedOutAt: checkOutDate});
+      await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Title: card.Title, Language: card.Language, CheckedOut: 1, CheckedOutBy: user.Name, CheckedOutTo: this.borrower, CheckedOutAt: checkOutDate});
       await this.db.createLog({Id: 0, Timestamp: checkOutDate, Action: 'CheckOut', UserId: user.Id, CardId: card.Id});
     }
     
@@ -65,7 +67,7 @@ export class HomeComponent {
     if (!card) return;
     const checkInDate = new Date().toISOString();
     const userId = await this.db.getUserIdFromLastCheckoutByCardId(card.Id);
-    await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 0, CheckedOutBy: undefined, CheckedOutAt: undefined});
+    await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 0, CheckedOutBy: undefined, CheckedOutTo: undefined, CheckedOutAt: undefined});
     await this.db.createLog({Id: 0, Timestamp: checkInDate, Action: 'CheckIn', UserId: userId, CardId: card.Id});
     this.state.updateCardCount();
     const dialog: Dialog = {

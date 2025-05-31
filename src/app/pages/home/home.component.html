@@ -4,13 +4,17 @@
     <div class="scanContainer">
         <div class="scanBox">
             <div class="scanTitle">
-                <span class="scanType">Worker</span>
+                <span class="scanType">Lender</span>
                 @if (scannedUser()) {<span class="remove" (click)="resetScannedUser()">×</span>}
             </div>
             @if (scannedUser()) {
-            <div class="scannedItem">
-                {{scannedUser()?.Name}}
-            </div>
+                <div class="scannedItemLender">
+                    {{scannedUser()?.Name}}
+                </div>
+                <div class="borrower">
+                    <span class="scanTitle">Borrower</span>
+                    <input [(ngModel)]="borrower">
+                </div>
             }
         </div>
         @for (card of scannedCards(); track card.Id) {
@@ -21,6 +25,7 @@
             </div>
             <div class="scannedItem">
                 {{card.BarCode}}<br>
+                {{card.Title}}<br>
                 {{card.Language}}
             </div>
         </div>
