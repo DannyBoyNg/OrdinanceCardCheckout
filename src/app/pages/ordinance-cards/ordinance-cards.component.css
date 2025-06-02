@@ -42,3 +42,7 @@ tr.mat-mdc-row, tr.mat-mdc-header-row {
     text-align: center;
     height: 500px;
 }
+.name {
+    color: green;
+    font-weight: 500;
+}

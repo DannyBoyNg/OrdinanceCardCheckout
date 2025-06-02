@@ -23,7 +23,17 @@
 
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef> Status </th>
-      <td mat-cell *matCellDef="let element"> {{element.CheckedOut? 'Checked out by '+element.CheckedOutBy+' at '+(element.CheckedOutAt|date:"yyyy-MM-dd HH:mm:ss"):'Available'}} </td>
+      <td mat-cell *matCellDef="let element"> 
+        @if(element.CheckedOut) {
+          Checked out by <span class="name">{{element.CheckedOutBy}}</span>
+          @if(element.CheckedOutTo) {
+            to <span class="name">{{element.CheckedOutTo}}</span>
+          }
+          &#64; {{element.CheckedOutAt|date:"yyyy-MM-dd HH:mm:ss"}}
+        } @else {
+          Available
+        }
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="action">

@@ -44,6 +44,11 @@ export class HomeComponent {
     const cards = this.scannedCards();
     if (user == null || cards.length == 0) return;
 
+    if (this.borrower === '') {
+      const response = await firstValueFrom(this.dialogService.confirm('Are you sure you want to checkout ordinance card(s) to yourself.'));
+      if (response !== true) return;
+    }
+
     const checkOutDate = new Date().toISOString();
     for (var card of cards) {
       await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Title: card.Title, Language: card.Language, CheckedOut: 1, CheckedOutBy: user.Name, CheckedOutTo: this.borrower, CheckedOutAt: checkOutDate});

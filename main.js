@@ -174,7 +174,7 @@ const deleteUser = (id) => {
 
 //Cards
 const getCards = () => {
-  const query = `SELECT * FROM OrdinanceCards ORDER BY barcode`;
+  const query = `SELECT * FROM OrdinanceCards ORDER BY checkedOut DESC, checkedOutTo, checkedOutBy, title`;
   const readQuery = db.prepare(query);
   const rowList = readQuery.all();
   return rowList;
@@ -196,7 +196,7 @@ const createCard = (card) => {
 }
 
 const updateCard = (card) => {
-  const updateQuery = db.prepare(`UPDATE OrdinanceCards SET barcode = @BarCode, title = @Title, language = @Language, checkedOut = @CheckedOut, checkedOutBy = @CheckedOutBy, checkedOutAt = @CheckedOutAt WHERE id = @Id`);
+  const updateQuery = db.prepare(`UPDATE OrdinanceCards SET barcode = @BarCode, title = @Title, language = @Language, checkedOut = @CheckedOut, checkedOutBy = @CheckedOutBy, checkedOutTo = @CheckedOutTo, checkedOutAt = @CheckedOutAt WHERE id = @Id`);
   const transaction = db.transaction(() => {
       updateQuery.run(card);
   });
