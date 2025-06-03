@@ -48,6 +48,10 @@ export class DatabaseService {
     return await window.sqliteAPI.invoke('updateCard', card);
   }
 
+  async updateCardBasic(card: OrdinanceCard): Promise<void> {
+    return await window.sqliteAPI.invoke('updateCardBasic', card);
+  }
+
   async deleteCard(id: number): Promise<void> {
     return await window.sqliteAPI.invoke('deleteCard', id);
   }

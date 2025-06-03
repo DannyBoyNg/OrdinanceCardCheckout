@@ -10,6 +10,7 @@ const createTableLogs = `CREATE TABLE IF NOT EXISTS "Logs" (
 	"Action"	TEXT NOT NULL,
 	"UserId"	INTEGER,
 	"CardId"	INTEGER NOT NULL,
+  "Borrower"	TEXT,
 	PRIMARY KEY("Id" AUTOINCREMENT)
 )`;
 const createTableUsers = `CREATE TABLE IF NOT EXISTS "Users" (
@@ -61,6 +62,13 @@ const stmt3 = db.prepare(dbV3Check);
 const result3 = stmt3.get();
 if (result3 == null) {
   db.exec(`ALTER TABLE OrdinanceCards ADD COLUMN CheckedOutTo TEXT;`);
+}
+// Check if column Borrower exists on table logs (upgrade if needed)
+const dbV4Check = `SELECT name FROM pragma_table_info('Logs') WHERE name = 'Borrower';`
+const stmt4 = db.prepare(dbV4Check);
+const result4 = stmt4.get();
+if (result4 == null) {
+  db.exec(`ALTER TABLE Logs ADD COLUMN Borrower TEXT;`);
 }
 
 // Error Handling
@@ -123,6 +131,7 @@ ipcMain.handle('getCards', async (_, arg) => getCards());
 ipcMain.handle('getCard', async (_, arg) => getCard(arg));
 ipcMain.handle('createCard', async (_, arg) => createCard(arg));
 ipcMain.handle('updateCard', async (_, arg) => updateCard(arg));
+ipcMain.handle('updateCardBasic', async (_, arg) => updateCardBasic(arg));
 ipcMain.handle('deleteCard', async (_, arg) => deleteCard(arg));
 ipcMain.handle('getLogs', async (_, arg) => getLogs(arg));
 ipcMain.handle('createLog', async (_, arg) => createLog(arg));
@@ -174,7 +183,7 @@ const deleteUser = (id) => {
 
 //Cards
 const getCards = () => {
-  const query = `SELECT * FROM OrdinanceCards ORDER BY checkedOut DESC, checkedOutTo, checkedOutBy, title`;
+  const query = `SELECT * FROM OrdinanceCards ORDER BY checkedOut DESC, checkedOutTo, checkedOutBy, title, language`;
   const readQuery = db.prepare(query);
   const rowList = readQuery.all();
   return rowList;
@@ -203,6 +212,14 @@ const updateCard = (card) => {
   transaction();
 }
 
+const updateCardBasic = (card) => {
+  const updateQuery = db.prepare(`UPDATE OrdinanceCards SET barcode = @BarCode, title = @Title, language = @Language WHERE id = @Id`);
+  const transaction = db.transaction(() => {
+      updateQuery.run(card);
+  });
+  transaction();
+}
+
 const deleteCard = (id) => {
   const deleteQuery = db.prepare(`DELETE FROM OrdinanceCards WHERE id = ?`);
   const transaction = db.transaction(() => {
@@ -213,14 +230,14 @@ const deleteCard = (id) => {
 
 //Logs
 const getLogs = () => {
-  const query = `SELECT timestamp, action, ordinanceCards.barcode, users.name FROM logs LEFT JOIN users on logs.userId = users.Id LEFT JOIN ordinanceCards on logs.cardId = ordinanceCards.Id ORDER BY timestamp DESC LIMIT 1000`;
+  const query = `SELECT timestamp, action, borrower, ordinanceCards.barcode, users.name FROM logs LEFT JOIN users on logs.userId = users.Id LEFT JOIN ordinanceCards on logs.cardId = ordinanceCards.Id ORDER BY timestamp DESC LIMIT 1000`;
   const readQuery = db.prepare(query);
   const rowList = readQuery.all();
   return rowList;
 }
 
 const createLog = (log) => {
-  const query = `INSERT INTO logs (timestamp, action, cardId, userId) VALUES (@Timestamp, @Action, @CardId, @UserId)`;
+  const query = `INSERT INTO logs (timestamp, action, cardId, userId, borrower) VALUES (@Timestamp, @Action, @CardId, @UserId, @Borrower)`;
   const insertQuery = db.prepare(query);
   const transaction = db.transaction(() => {
       insertQuery.run(log);

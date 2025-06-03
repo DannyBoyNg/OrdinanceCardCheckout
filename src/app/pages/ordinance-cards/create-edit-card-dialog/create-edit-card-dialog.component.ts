@@ -119,7 +119,7 @@ export class CreateEditCardDialogComponent {
   async updateCard() {
     this.form.enable();
     const card = this.form.value as OrdinanceCard;
-    await this.db.updateCard(card);
+    await this.db.updateCardBasic(card);
     this.closeModal(true);
   }
 }

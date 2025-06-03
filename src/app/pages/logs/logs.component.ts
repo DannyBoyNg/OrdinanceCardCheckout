@@ -20,7 +20,7 @@ export class LogsComponent {
   state = inject(GlobalStateService);
   db = inject(DatabaseService);
   
-  displayedColumns: string[] = ['date', 'action', 'card', 'user'];
+  displayedColumns: string[] = ['date', 'action', 'card', 'user', 'borrower'];
   dataSource: WritableSignal<Log[]> = signal([]);
 
   async ngOnInit() {

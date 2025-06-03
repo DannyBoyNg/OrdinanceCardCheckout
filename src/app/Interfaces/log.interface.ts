@@ -4,6 +4,7 @@ export interface Log {
     Action: string;
     UserId?: number;
     CardId: number;
+    Borrower?: string;
 
     Name?: string;
     BarCode?: string;

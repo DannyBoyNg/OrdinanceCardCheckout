@@ -52,7 +52,7 @@ export class HomeComponent {
     const checkOutDate = new Date().toISOString();
     for (var card of cards) {
       await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Title: card.Title, Language: card.Language, CheckedOut: 1, CheckedOutBy: user.Name, CheckedOutTo: this.borrower, CheckedOutAt: checkOutDate});
-      await this.db.createLog({Id: 0, Timestamp: checkOutDate, Action: 'CheckOut', UserId: user.Id, CardId: card.Id});
+      await this.db.createLog({Id: 0, Timestamp: checkOutDate, Action: 'CheckOut', UserId: user.Id, CardId: card.Id, Borrower: this.borrower});
     }
     
     this.state.updateCardCount();
@@ -72,8 +72,8 @@ export class HomeComponent {
     if (!card) return;
     const checkInDate = new Date().toISOString();
     const userId = await this.db.getUserIdFromLastCheckoutByCardId(card.Id);
-    await this.db.updateCard({Id: card.Id, BarCode: card.BarCode, Language: card.Language, CheckedOut: 0, CheckedOutBy: undefined, CheckedOutTo: undefined, CheckedOutAt: undefined});
-    await this.db.createLog({Id: 0, Timestamp: checkInDate, Action: 'CheckIn', UserId: userId, CardId: card.Id});
+    await this.db.updateCard({Id: card.Id, Title: card.Title, BarCode: card.BarCode, Language: card.Language, CheckedOut: 0, CheckedOutBy: undefined, CheckedOutTo: undefined, CheckedOutAt: undefined});
+    await this.db.createLog({Id: 0, Timestamp: checkInDate, Action: 'CheckIn', UserId: userId, CardId: card.Id, Borrower: card.CheckedOutTo});
     this.state.updateCardCount();
     const dialog: Dialog = {
       type: DialogType.Info,
