@@ -58,7 +58,7 @@ export class HomeComponent {
     this.state.updateCardCount();
     const dialog: Dialog = {
       type: DialogType.Info,
-      message: 'Checkout complete',
+      message: ['Checkout complete'],
       autoClose: 5
     }
     await firstValueFrom(this.dialogService.open(dialog));
@@ -77,7 +77,7 @@ export class HomeComponent {
     this.state.updateCardCount();
     const dialog: Dialog = {
       type: DialogType.Info,
-      message: 'Card returned',
+      message: ['Card returned'],
       autoClose: 3
     }
     await firstValueFrom(this.dialogService.open(dialog));
