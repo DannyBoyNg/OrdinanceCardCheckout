@@ -127,7 +127,7 @@ ipcMain.handle('getUser', async (_, arg) => getUser(arg));
 ipcMain.handle('createUser', async (_, arg) => createUser(arg));
 ipcMain.handle('updateUser', async (_, arg) => updateUser(arg));
 ipcMain.handle('deleteUser', async (_, arg) => deleteUser(arg));
-ipcMain.handle('getCards', async (_, arg) => getCards());
+ipcMain.handle('getCards', async (_, arg) => getCards(arg));
 ipcMain.handle('getCard', async (_, arg) => getCard(arg));
 ipcMain.handle('createCard', async (_, arg) => createCard(arg));
 ipcMain.handle('updateCard', async (_, arg) => updateCard(arg));
@@ -182,8 +182,19 @@ const deleteUser = (id) => {
 }
 
 //Cards
-const getCards = () => {
-  const query = `SELECT * FROM OrdinanceCards ORDER BY checkedOut DESC, checkedOutTo, checkedOutBy, title, language`;
+const getCards = ([sortOrder, sortOrderDirection]) => {
+  const direction = sortOrderDirection ?? 'DESC';
+  let order = `checkedOut ${direction}, checkedOutTo, checkedOutBy, title, language`;
+  if (sortOrder == 'barCode') {
+    order = `barCode ${direction}`;
+  } else if (sortOrder == 'title') {
+    order = `title ${direction}`;
+  } else if (sortOrder == 'language') {
+    order = `language ${direction}`;
+  } else if (sortOrder == 'status') {
+    order = `checkedOut ${direction}, checkedOutTo, checkedOutBy, title, language`;
+  }
+  const query = `SELECT * FROM OrdinanceCards ORDER BY ${order}`;
   const readQuery = db.prepare(query);
   const rowList = readQuery.all();
   return rowList;

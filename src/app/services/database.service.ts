@@ -32,8 +32,8 @@ export class DatabaseService {
   }
 
   //Cards
-  async getCards(): Promise<OrdinanceCard[]> {  
-    return await window.sqliteAPI.invoke('getCards', null);
+  async getCards(sortOrder?: string, sortDirection?: string): Promise<OrdinanceCard[]> {  
+    return await window.sqliteAPI.invoke('getCards', [sortOrder, sortDirection]);
   }
 
   async getCard(barcode: string): Promise<OrdinanceCard|undefined> {

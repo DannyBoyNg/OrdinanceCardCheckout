@@ -24,6 +24,8 @@ export class OrdinanceCardsComponent {
   
   displayedColumns: string[] = ['code', 'title', 'language', 'status', 'action'];
   dataSource: WritableSignal<OrdinanceCard[]> = signal([]);
+  currentSortColumn = '';
+  currentSortDirection = false; //true: asc, false: desc
 
   async ngOnInit() {
     await this.getCards();
@@ -76,5 +78,17 @@ export class OrdinanceCardsComponent {
       await this.getCards();
       this.state.updateCardCount();
     }
-  }  
+  }
+
+  async sort(column: string) {
+    if (this.currentSortColumn === column) {
+      this.currentSortDirection = !this.currentSortDirection;
+    } else {
+      this.currentSortDirection = true;
+    }
+    this.currentSortColumn = column;
+    const sortDirection = this.currentSortDirection ? 'ASC' : 'DESC';
+    const result = await this.db.getCards(column, sortDirection);
+    this.dataSource.set(result);
+  }
 }
